@@ -40,9 +40,7 @@ public class CreateProcedure extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = getActivity().findViewById(R.id.input_steps_recycler_view);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLinearLayoutManager);
+
 
 
 
