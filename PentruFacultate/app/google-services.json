@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "389943891358",
+    "firebase_url": "https://lucrarelicentasb.firebaseio.com",
+    "project_id": "lucrarelicentasb",
+    "storage_bucket": "lucrarelicentasb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389943891358:android:14b88856bbff2804",
+        "android_client_info": {
+          "package_name": "com.example.samuel.pentrufacultate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389943891358-m3gq3u7ddpubsvsjj7b14p3r9u8jgpj7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.samuel.pentrufacultate",
+            "certificate_hash": "9c8c6743894fed27076c773e638e67c0af2aa69b"
+          }
+        },
+        {
+          "client_id": "389943891358-7s6cgdn3r7bsl3fvrdvscj5nd821662h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw8XmOlTKOdO60W9P7rStxcnwkoPrTnD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389943891358-7s6cgdn3r7bsl3fvrdvscj5nd821662h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
