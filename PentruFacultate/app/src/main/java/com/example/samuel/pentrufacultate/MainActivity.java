@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -118,8 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Toolbar toolbarTitle = findViewById(R.id.toolbar);
         switch (menuItem.getItemId()) {
             case R.id.nav_procedures:
+                toolbarTitle.setTitle("Proceduri");
                 Fragment displayProceduresFragment = new ProceduresFragment();
                 Bundle bundleDisplay = new Bundle();
                 bundleDisplay.putString(USER_UID_EXTRA,uidCurrentUser);
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,displayProceduresFragment).commit();
                 break;
             case R.id.nav_createProcedure:
+                toolbarTitle.setTitle("O procedura noua");
                 Fragment createFragment = new CreateProcedure();
                 Bundle bundleCreate = new Bundle();
                 bundleCreate.putString(USER_UID_EXTRA, uidCurrentUser);

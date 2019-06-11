@@ -2,22 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_dark">
+    android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:text="Procedurile tale:"
-        android:textSize="30sp" />
+    <!--<TextView-->
+        <!--android:id="@+id/text_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:text="Procedurile tale:"-->
+        <!--android:textSize="30sp" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/display_all_procedure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text_title"
-        android:layout_marginTop="8dp" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/white" />
 
 </RelativeLayout>
