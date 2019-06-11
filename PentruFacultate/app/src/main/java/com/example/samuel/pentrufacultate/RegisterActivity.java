@@ -29,7 +29,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "REgister";
     private EditText inputEmail, inputPassword, inputName;
-    private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
 
 
@@ -49,13 +48,13 @@ public class RegisterActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-        btnSignIn = findViewById(R.id.sign_in_button);
-        btnSignUp = findViewById(R.id.sign_up_button);
+        Button btnSignIn = findViewById(R.id.sign_in_button);
+        Button btnSignUp = findViewById(R.id.sign_up_button);
         inputName = findViewById(R.id.username);
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);
         progressBar = findViewById(R.id.progressBar);
-        btnResetPassword = findViewById(R.id.btn_reset_password);
+        Button btnResetPassword = findViewById(R.id.btn_reset_password);
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override

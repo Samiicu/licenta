@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,13 +29,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
+import static com.example.samuel.pentrufacultate.network.StringHelper.*;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "Main Activity";
     private DrawerLayout drawer;
     private TextView mEmailDispaly, mUsernameDisplay;
     private LinearLayout displayProfile;
-
-
+    private String uidCurrentUser;
     private User currentUser;
 
     @Override
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        String uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference mCurrentUserDatabaseInfo = mDatabase.child("users").child(uidCurrentUser);
 
         mCurrentUserDatabaseInfo.addValueEventListener(new ValueEventListener() {
@@ -86,15 +91,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-
-
     }
 
     private void updateProfileData(User currentUser, Application application) {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
-        mUsernameDisplay  = linearLayout.findViewById(R.id.username_id);
+        mUsernameDisplay = linearLayout.findViewById(R.id.username_id);
         mEmailDispaly = linearLayout.findViewById(R.id.email_id);
         mUsernameDisplay.setText(currentUser.getUsername());
         mEmailDispaly.setText(currentUser.getEmail());
@@ -106,18 +109,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+
+
             super.onBackPressed();
         }
+
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_procedures:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProceduresFragment()).commit();
+                Fragment displayProceduresFragment = new ProceduresFragment();
+                Bundle bundleDisplay = new Bundle();
+                bundleDisplay.putString(USER_UID_EXTRA,uidCurrentUser);
+                displayProceduresFragment.setArguments(bundleDisplay);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,displayProceduresFragment).commit();
                 break;
             case R.id.nav_createProcedure:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CreateProcedure()).commit();
+                Fragment createFragment = new CreateProcedure();
+                Bundle bundleCreate = new Bundle();
+                bundleCreate.putString(USER_UID_EXTRA, uidCurrentUser);
+                createFragment.setArguments(bundleCreate);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, createFragment).addToBackStack("tag").commit();
                 break;
             case R.id.nav_configuration:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ConfigurationFragment()).commit();
@@ -138,7 +152,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
 }
