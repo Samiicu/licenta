@@ -2,85 +2,54 @@ package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.samuel.pentrufacultate.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCreateProcedure.ViewHolder> {
+public class AdapterForCreateProcedure extends ArrayAdapter<String> {
+    private final static String TAG = "AdapterCreateProcedure";
+    private int resourceLayout;
+    private Context mContext;
 
-    private List<String> mData;
-    private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
-
-    // data is passed into the constructor
-    public AdapterForCreateProcedure(Context context, List<String> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+    public AdapterForCreateProcedure(Context context, int resource, ArrayList<String> items) {
+        super(context, resource, items);
+        this.resourceLayout = resource;
+        this.mContext = context;
     }
 
-    // inflates the row layout from xml when needed
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(TAG, "getView:"+position );
+        View v = convertView;
 
-        View view = mInflater.inflate(R.layout.create_procedure_row, parent, false);
-        return new ViewHolder(view);
-    }
-
-    // binds the data to the TextView in each row
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String hint = mData.get(position);
-
-
-
-        int id=position+1;
-        holder.textInputEditText.setHint(hint);
-        holder.textInputEditText.setId(id);
-        int idLength=String.valueOf(id).length();
-//        holder.textInputLayout.setId((id*((int)Math.pow(10,idLength))+id));
-    }
-
-    // total number of rows
-    @Override
-    public int getItemCount() {
-        return mData.size();
-    }
-
-
-    // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextInputEditText textInputEditText;
-//        TextInputLayout textInputLayout;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            textInputEditText = itemView.findViewById(R.id.procedure_edit_text_item);
-//            textInputLayout = itemView.findViewById(R.id.procedure_text_input_item);
+        if (v == null) {
+            LayoutInflater vi;
+            vi = LayoutInflater.from(mContext);
+            v = vi.inflate(resourceLayout, null);
         }
 
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+        String p = getItem(position);
+
+        if (p != null) {
+            TextInputEditText textInputEditText = v.findViewById(R.id.procedure_edit_text_item);
+            if (textInputEditText != null) {
+                textInputEditText.setHint(p);
+            }
+            else
+            {
+                Log.e(TAG, "getView:textInput is NULL! " );
+            }
         }
-    }
 
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return mData.get(id);
+        return v;
     }
-
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
-    }
+public void addInput(ListView listView,String value){}
 }

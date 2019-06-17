@@ -4,5 +4,4 @@
     layout_height="230dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="Pasul 1"
     android:textSize="12sp"/>

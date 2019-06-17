@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static android.support.v7.widget.RecyclerView.HORIZONTAL;
+import static android.support.v7.widget.RecyclerView.VERTICAL;
 
 public class ProceduresFragment extends Fragment {
     private static final String TAG = "APP_LOG_display";
@@ -75,6 +79,8 @@ public class ProceduresFragment extends Fragment {
         Log.d(TAG, "onViewCreated: " + recyclerView);
         Log.d(TAG, "onViewCreated: " + mProcedures.size());
 //        adapter.setClickListener(this);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), VERTICAL);
+        recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplayProcedures);
     }
 }

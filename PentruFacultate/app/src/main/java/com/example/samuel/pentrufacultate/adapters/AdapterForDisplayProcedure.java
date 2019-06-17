@@ -1,8 +1,8 @@
 package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,24 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.samuel.pentrufacultate.MainActivity;
 import com.example.samuel.pentrufacultate.R;
+import com.example.samuel.pentrufacultate.fragments.SelectedProcedureFragment;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForDisplayProcedure.ViewHolder> {
-
+    private static final String TAG = "MY_APP_Display_Fragment";
     private ArrayList<ProcedureModel> mData;
     private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
+    private MainActivity mMainActivity;
+//    private final OnItemClickListener listener;
+
 
     // data is passed into the constructor
     public AdapterForDisplayProcedure(Context context, ArrayList<ProcedureModel> data) {
+        mMainActivity = (MainActivity) context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+//        this.listener = listener;
     }
 
     // inflates the row layout from xml when needed
@@ -43,13 +46,15 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
     public void onBindViewHolder(ViewHolder holder, int position) {
 
 
-        Log.d(TAG, "onBindViewHolder: "+  holder.numberProcedure);
-        Log.d(TAG, "onBindViewHolder: "+  holder.titleProcedure);
-        Log.d(TAG, "onBindViewHolder: "+  holder.numberStepsProcedure);
-        holder.numberProcedure.setText(String.valueOf(position + 1));
-        holder.titleProcedure.setText( mData.get(position).getName());
-        holder.numberStepsProcedure.setText(String.valueOf(mData.get(position).getSteps().size()));
-//        holder.textInputLayout.setId((id*((int)Math.pow(10,idLength))+id));
+//        holder.numberProcedure.setText(String.valueOf(position + 1));
+        holder.titleProcedure.setText(mData.get(position).getName());
+        holder.titleProcedure.setTag(position);
+        String numarPasi = String.valueOf(mData.get(position).getSteps().size());
+        String textNumarPasi;
+        textNumarPasi = "contine " + numarPasi + " pasi";
+
+        holder.numberStepsProcedure.setText(textNumarPasi);
+
     }
 
     // total number of rows
@@ -60,35 +65,32 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView numberProcedure, titleProcedure, numberStepsProcedure;
-//        TextInputLayout textInputLayout;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView titleProcedure, numberStepsProcedure;
 
-        ViewHolder(View itemView) {
+        ViewHolder(final View itemView) {
             super(itemView);
-
-            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: " + titleProcedure.getText());
+                    SelectedProcedureFragment selectedProcedureFragment = new SelectedProcedureFragment();
+                    Bundle bundle= new Bundle();
+                    bundle.putString("ProcedureToDisplayJSON",mData.get((Integer) titleProcedure.getTag()).toJson());
+                    bundle.putString("userUid",MainActivity.getUserUid());
+                    selectedProcedureFragment.setArguments(bundle);
+                    mMainActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, selectedProcedureFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+//            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
             titleProcedure = itemView.findViewById(R.id.procedure_display_title);
             numberStepsProcedure = itemView.findViewById(R.id.procedure_display_number_of_steps);
 
-//            textInputLayout = itemView.findViewById(R.id.procedure_text_input_item);
         }
 
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-        }
-    }
 
-    // convenience method for getting data at click position
-
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 }

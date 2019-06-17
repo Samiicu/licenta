@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private TextView mEmailDispaly, mUsernameDisplay;
     private LinearLayout displayProfile;
-    private String uidCurrentUser;
+    private static String uidCurrentUser;
     private User currentUser;
 
     @Override
@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (savedInstanceState == null) {
+            setTitle("Proceduri");
+//            Toolbar toolbarTitle = getTitle()findViewById(R.id.toolbar);
+//            toolbarTitle.setTitle("Proceduri");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProceduresFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_procedures);
         }
@@ -110,8 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
-
             super.onBackPressed();
         }
 
@@ -155,5 +156,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public static String getUserUid()
+    {
+        return uidCurrentUser;
     }
 }

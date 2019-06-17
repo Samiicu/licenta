@@ -5,13 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForCreateProcedure;
@@ -33,10 +32,13 @@ public class CreateProcedure extends Fragment {
     Button addNewInputButton, saveProcedure;
     private final static String TAG = "CREATE_PROCDURE";
     ArrayList<String> defaultSteps = new ArrayList<>();
+    public   static ArrayList<TextInputEditText> textStorega= new ArrayList<>();
     ProcedureModel procedure;
     String userUid;
-    AdapterForCreateProcedure adapter;
-    int numberOfCurrentSteps;
+    AdapterForCreateProcedure customAdapter;
+    static int numberOfCurrentSteps;
+    ListView inputsListView;
+
 
     @Nullable
     @Override
@@ -58,11 +60,11 @@ public class CreateProcedure extends Fragment {
 
         //////////////
         // set up the RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.input_steps_list_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new AdapterForCreateProcedure(getContext(), defaultSteps);
+        inputsListView = view.findViewById(R.id.input_steps_list_view);
+        customAdapter = new AdapterForCreateProcedure(getContext(), R.layout.item_step, defaultSteps);
+
 //        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        inputsListView.setAdapter(customAdapter);
 
         ///////////
 
@@ -72,8 +74,10 @@ public class CreateProcedure extends Fragment {
             @Override
             public void onClick(View v) {
                 ++numberOfCurrentSteps;
+                Log.d(TAG, "Number of current step: "+numberOfCurrentSteps);
                 defaultSteps.add("Pasul " + numberOfCurrentSteps);
-                adapter.notifyItemInserted(numberOfCurrentSteps-1);
+                customAdapter.notifyDataSetChanged();
+                //adapter.notifyItemInserted(numberOfCurrentSteps-1);
             }
         });
         saveProcedure.setOnClickListener(new View.OnClickListener() {
@@ -82,15 +86,18 @@ public class CreateProcedure extends Fragment {
                 ArrayList<String> dataStorageSteps = new ArrayList<>();
 
                 String procedureName = nameText.getText().toString();
+                Log.d(TAG, "Number of Steps: "+numberOfCurrentSteps);
                 for (int id = 1; id <= numberOfCurrentSteps; id++) {
-                    procedureStepText = getActivity().findViewById(id);
+                    procedureStepText = (TextInputEditText) textStorega.get(id-1);
                     try {
                         String stepTextData = procedureStepText.getText().toString();
                         dataStorageSteps.add(stepTextData);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         Log.e(TAG, "Null step " + id);
                     }
                 }
+
                 procedure = new ProcedureModel(procedureName, String.valueOf(System.currentTimeMillis()), dataStorageSteps);
                 Log.d(TAG, "prepare_to_save " + procedure.getSteps().size());
                 mProceduresDatabase.child(userUid).child(procedure.getName()).setValue(procedure.toJson());

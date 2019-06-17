@@ -16,7 +16,6 @@ private ArrayList<String> steps;
     public ProcedureModel(String name, String data_creation, ArrayList<String> steps) {
         this.name = name;
         this.data_creation = data_creation;
-
         this.steps = steps;
     }
 
