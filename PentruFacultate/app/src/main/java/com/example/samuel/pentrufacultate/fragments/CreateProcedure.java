@@ -5,12 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForCreateProcedure;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.example.samuel.pentrufacultate.network.StringHelper.*;
 
@@ -31,23 +33,22 @@ public class CreateProcedure extends Fragment {
     private DatabaseReference mProceduresDatabase = mDatabase.child("procedures");
     Button addNewInputButton, saveProcedure;
     private final static String TAG = "CREATE_PROCDURE";
-    ArrayList<String> defaultSteps = new ArrayList<>();
-    public   static ArrayList<TextInputEditText> textStorega= new ArrayList<>();
+    HashMap<String, String> inputData = new HashMap<>();
     ProcedureModel procedure;
     String userUid;
-    AdapterForCreateProcedure customAdapter;
-    static int numberOfCurrentSteps;
-    ListView inputsListView;
-
+    AdapterForCreateProcedure adapter;
+    int numberOfCurrentSteps;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        defaultSteps.add("Pasul 1");
-        defaultSteps.add("Pasul 2");
-        defaultSteps.add("Pasul 3");
 
-        numberOfCurrentSteps = defaultSteps.size();
+        inputData.put("Pasul 1", "");
+        inputData.put("Pasul 2", "");
+        inputData.put("Pasul 3", "");
+
+
+        numberOfCurrentSteps = inputData.size();
         userUid = getArguments().getString(USER_UID_EXTRA);
         return inflater.inflate(R.layout.fragment_create_procedure, container, false);
     }
@@ -60,24 +61,23 @@ public class CreateProcedure extends Fragment {
 
         //////////////
         // set up the RecyclerView
-        inputsListView = view.findViewById(R.id.input_steps_list_view);
-        customAdapter = new AdapterForCreateProcedure(getContext(), R.layout.item_step, defaultSteps);
+        RecyclerView recyclerView = view.findViewById(R.id.input_steps_recycler_view);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        adapter = new AdapterForCreateProcedure(getContext(), inputData);
 //        adapter.setClickListener(this);
-        inputsListView.setAdapter(customAdapter);
+        recyclerView.setAdapter(adapter);
 
         ///////////
-
 
 
         addNewInputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ++numberOfCurrentSteps;
-                Log.d(TAG, "Number of current step: "+numberOfCurrentSteps);
-                defaultSteps.add("Pasul " + numberOfCurrentSteps);
-                customAdapter.notifyDataSetChanged();
-                //adapter.notifyItemInserted(numberOfCurrentSteps-1);
+                inputData.put("Pasul " + numberOfCurrentSteps, "");
+                adapter.notifyItemInserted(numberOfCurrentSteps - 1);
             }
         });
         saveProcedure.setOnClickListener(new View.OnClickListener() {
@@ -86,15 +86,18 @@ public class CreateProcedure extends Fragment {
                 ArrayList<String> dataStorageSteps = new ArrayList<>();
 
                 String procedureName = nameText.getText().toString();
-                Log.d(TAG, "Number of Steps: "+numberOfCurrentSteps);
+                for (String key : inputData.keySet()) {
+
+                    Log.d(TAG, "Keys order: " + key);
+
+                }
                 for (int id = 1; id <= numberOfCurrentSteps; id++) {
-                    procedureStepText = (TextInputEditText) textStorega.get(id-1);
-                    try {
-                        String stepTextData = procedureStepText.getText().toString();
+                    String key = "Pasul " + id;
+                    Log.d(TAG, "Values " + inputData.get(key));
+
+                    String stepTextData = inputData.get(key);
+                    if (!stepTextData.equals("")) {
                         dataStorageSteps.add(stepTextData);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "Null step " + id);
                     }
                 }
 
