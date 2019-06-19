@@ -1,10 +1,14 @@
 package com.example.samuel.pentrufacultate.models;
 
-import java.lang.ref.SoftReference;
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Clasificator {
+    private static final String TAG = "clasificatorTAG";
+
+
     public Clasificator() {
     }
 
@@ -43,12 +47,12 @@ public class Clasificator {
 
         String givenAction = actionFromVoiceCommand.toLowerCase();
 
-        String[] startProcedure = {"start procedure", "can you start procedure"};
+        String[] startProcedure = {"start", "can you start procedure"};
         String[] nextStep = {"next", "next step", "forward", "next step please"};
-        String[] backStep = {"back", "back step", "backward", "last step", "last step please"};
-        String[] repeatStep = {"repeat", "repeat step", "repeat the current step please"};
-        String[] restartProcedure = {"restart", "restart procedure"};
-
+        String[] backStep = {"back", "back step", "backward", "previous step"};
+        String[] repeatStep = {"repeat", "repeat step", "repeat the current step please", "repeate please"};
+        String[] restartProcedure = {"restart procedure"};
+        String[] gotToStep = {"go to step", "go at step"};
 
         HashMap<String, String[]> actionGroups = new HashMap<>();
         actionGroups.put("startProcedure", startProcedure);
@@ -56,6 +60,7 @@ public class Clasificator {
         actionGroups.put("backStep", backStep);
         actionGroups.put("repeatStep", repeatStep);
         actionGroups.put("restartProcedure", restartProcedure);
+        actionGroups.put("goToStep", gotToStep);
 
         String bestAction = null;
         int minEditDistance = -1;
@@ -91,4 +96,5 @@ public class Clasificator {
     public String prepareComandForED(String command) {
         return command.replaceAll("[^A-Za-z0-9]+", "").toLowerCase();
     }
+
 }

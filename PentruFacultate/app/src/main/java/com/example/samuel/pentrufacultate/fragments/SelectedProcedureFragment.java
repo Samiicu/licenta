@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -44,6 +45,7 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
     private TextToSpeech mTTS;
     private String uidCurrentUser;
     private User currentUser;
+    private String voiceInput;
     private int mCurrentStepPosition = 0;
     AdapterForDisplaySteps adapterForDisplaySteps;
     ProcedureModel mProcedure;
@@ -88,6 +90,7 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
 
     private void speak(String textForSpeech) {
         amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
         mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, map);
@@ -110,24 +113,28 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
         mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                Log.e(TAG, "onStart: speaking" );
+                amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                Log.e(TAG, "onStart: speaking");
             }
 
             @Override
             public void onDone(String utteranceId) {
-                if (amanager == null){
-                    Log.e(TAG, "onDone: amangerNULL");
-                }
-                if (speech == null){
-                    Log.e(TAG, "onDone: speech NULL" );
-                }
                 amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                 //something here is worng
-//                speech.startListening(recognizerIntent);
-                Log.d(TAG, "onDone: speaking" );
+                Handler mainHandler = new Handler(getContext().getMainLooper());
+
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        startListeningSpeech();
+                    }
+                };
+                mainHandler.post(myRunnable);
+
+                Log.d(TAG, "onDone: speaking");
 //
 
-                Log.d(TAG, "onDone: prepared" );
+                Log.d(TAG, "onDone: prepared");
             }
 
             @Override
@@ -145,6 +152,12 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), VERTICAL);
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplaySteps);
+
+
+    }
+
+    public void startListeningSpeech() {
+        speech.startListening(recognizerIntent);
     }
 
 
@@ -258,6 +271,7 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
 //            text += result + "\n";
         String voiceCommand = clasificator.prepareComandForED(matches.get(0));
         Log.i(TAG, "onResults: RESULT: " + matches.get(0));
+        voiceInput=matches.get(0);
         if (!voiceCommand.equals("") && voiceCommand != null) {
 
             final String mostProbableAction = clasificator.getMostProbableAction(voiceCommand);
@@ -265,6 +279,8 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
                 parseVoiceCommand(mostProbableAction);
                 Log.e(TAG, "onResults: afterParseCommand");
 //                parseVoiceCommand(mostProbableAction);
+            } else {
+                speech.startListening(recognizerIntent);
             }
             Log.i(TAG, "onResults: " + clasificator.getMostProbableAction(voiceCommand));
         } else {
@@ -285,32 +301,48 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
                     break;
                 case "nextStep":
                     mCurrentStepPosition++;
-                    if (mCurrentStepPosition <= mProcedureSteps.size()) {
-                        Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
 
-                        speak(mProcedureSteps.get(mCurrentStepPosition));
-                    } else {
-                        Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
-                    }
+                        if (mCurrentStepPosition <=mProcedureSteps.size() && mCurrentStepPosition >= 0) {
+                            Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
+
+                            speak(mProcedureSteps.get(mCurrentStepPosition));
+                        } else {
+                            startListeningSpeech();
+                            Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
+                        }
                     break;
                 case "backStep":
                     mCurrentStepPosition--;
-                    if (mCurrentStepPosition >= 0) {
+                    if (mCurrentStepPosition < mProcedureSteps.size() && mCurrentStepPosition >= 0) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
+                        startListeningSpeech();
                         Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
                     }
                     break;
                 case "repeatStep":
-                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition <= mProcedureSteps.size()) {
+                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
+                        startListeningSpeech();
                         Log.e(TAG, "parseVoiceCommand: repeat step didn't exist ");
                     }
                     break;
                 case "restartProcedure":
                     mCurrentStepPosition = 0;
                     speak(mProcedureSteps.get(mCurrentStepPosition));
+                    break;
+                case "goToStep":
+                   mCurrentStepPosition=Integer.valueOf(stripNonDigits(voiceInput))-1 ;
+                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
+                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    } else {
+                        startListeningSpeech();
+                        Log.e(TAG, "parseVoiceCommand: repeat step didn't exist ");
+                    }
+                    break;
+                default:
+                    speech.startListening(recognizerIntent);
                     break;
             }
         } catch (Exception ignored) {
@@ -323,7 +355,18 @@ public class SelectedProcedureFragment extends Fragment implements RecognitionLi
         Log.i(TAG, "onPartialResults");
 
     }
-
+    public static String stripNonDigits(
+            final CharSequence input /* inspired by seh's comment */){
+        final StringBuilder sb = new StringBuilder(
+                input.length() /* also inspired by seh's comment */);
+        for(int i = 0; i < input.length(); i++){
+            final char c = input.charAt(i);
+            if(c > 47 && c < 58){
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
     @Override
     public void onEvent(int eventType, Bundle params) {
         Log.i(TAG, "onEvent");
