@@ -6,22 +6,120 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="onResults" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
+  </component>
+  <component name="AvailableLibraryUpdateStorage">
+    <library-updates>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>recyclerview-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>appcompat-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.code.gson</group-id>
+        <name>gson</name>
+        <version>2.8.5</version>
+        <repository>JCenter</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>design</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.firebase</group-id>
+        <name>firebase-core</name>
+        <version>17.0.0</version>
+        <repository>Google,Google Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.firebase</group-id>
+        <name>firebase-auth</name>
+        <version>18.0.0</version>
+        <repository>Google,Google Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>cardview-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.android.gms</group-id>
+        <name>play-services-auth</name>
+        <version>17.0.0</version>
+        <repository>Google,Google Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>support-v4</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.constraint</group-id>
+        <name>constraint-layout</name>
+        <version>2.0.0-beta2</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.google.firebase</group-id>
+        <name>firebase-database</name>
+        <version>18.0.0</version>
+        <repository>Google,Google Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>junit</group-id>
+        <name>junit</name>
+        <version>4.13-beta-3</version>
+        <repository>JCenter</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test</group-id>
+        <name>runner</name>
+        <version>1.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test.espresso</group-id>
+        <name>espresso-core</name>
+        <version>3.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+    </library-updates>
+    <last-search-timestamp>1560925073937</last-search-timestamp>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ea80edf5-60b3-4679-931f-9b5ab522f6c7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__artifacts_pocketsphinx_android_5prealpha_release_unspecified_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_vikramezhil_DroidSpeech_v2_0_3_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/models/Clasificator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pocketsphinx-android-5prealpha-release/pocketsphinx-android-5prealpha-release.aar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForCreateProcedure.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForCreateProcedure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/CreateProcedure.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/CreateProcedure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/SelectedProcedureFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/SelectedProcedureFragment.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,110 +137,115 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/CreateProcedure.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="67" column="32" lean-forward="true" selection-start-line="67" selection-start-column="32" selection-end-line="67" selection-end-column="32" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2849#3143#0" expanded="true" />
-                <element signature="e#3142#3143#0" expanded="true" />
-                <element signature="e#3187#4286#0" expanded="true" />
-                <element signature="e#4285#4286#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure.xml">
-          <provider editor-type-id="android-designer2" />
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-584">
-              <caret line="35" column="39" selection-start-line="35" selection-start-column="25" selection-end-line="35" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_configuration.xml">
-          <provider editor-type-id="android-designer2" />
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="8" column="44" lean-forward="true" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForDisplayProcedure.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/ProceduresFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="444">
-              <caret line="61" column="41" selection-start-line="61" selection-start-column="41" selection-end-line="61" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/ProcedureAdapters.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-11">
-              <caret line="31" column="91" lean-forward="true" selection-start-line="31" selection-start-column="91" selection-end-line="31" selection-end-column="91" />
+            <state relative-caret-position="289">
+              <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
+              <folding>
+                <element signature="e#2230#2231#0" expanded="true" />
+                <element signature="e#2265#2266#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForCreateProcedure.java">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/SelectedProcedureFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="41" column="13" lean-forward="true" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
+            <state relative-caret-position="576">
+              <caret line="82" column="64" lean-forward="true" selection-start-line="82" selection-start-column="64" selection-end-line="82" selection-end-column="64" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2511#2512#0" expanded="true" />
-                <element signature="e#2550#2551#0" expanded="true" />
+                <element signature="e#5451#5452#0" expanded="true" />
+                <element signature="e#5555#5556#0" expanded="true" />
+                <element signature="e#5743#5744#0" expanded="true" />
+                <element signature="e#8944#8945#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/create_procedure_row.xml">
-          <provider editor-type-id="android-designer2" />
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_step.xml">
-          <provider editor-type-id="android-designer2" />
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForDisplaySteps.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+              <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/input_step_item.xml">
-          <provider editor-type-id="android-designer2" />
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/models/Clasificator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="9" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="9" />
+            <state relative-caret-position="408">
+              <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2737#2738#0" expanded="true" />
+              </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3df13d4a52c493e5671d30def4cdcd1/jars/classes.jar!/edu/cmu/pocketsphinx/SpeechRecognizer.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="226">
+              <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="518">
+              <caret line="39" column="1" selection-start-line="39" selection-start-column="1" selection-end-line="39" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/LoginActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-187">
+              <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="94">
+              <caret line="40" column="34" selection-start-line="40" selection-start-column="2" selection-end-line="40" selection-end-column="34" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
+              <folding>
+                <element signature="e#276#294#0" expanded="true" />
+                <element signature="e#635#662#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+          <provider editor-type-id="android-manifest" />
         </entry>
       </file>
     </leaf>
@@ -154,17 +257,14 @@
         <option value="valueResourceFile" />
         <option value="Enum" />
         <option value="layoutResourceFile_vertical" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>theme editor</find>
-      <find>Coding</find>
-      <find>ic_mes</find>
-      <find>nav_mes</find>
       <find>nav_proced</find>
       <find>ic_chat</find>
       <find>My Pr</find>
@@ -191,6 +291,10 @@
       <find>dataStorageSteps</find>
       <find>Decrease Font Size/</find>
       <find>int id=position+1;</find>
+      <find>en</find>
+      <find>EN</find>
+      <find>isRecognitionAvailable</find>
+      <find>onres</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\samue\AndroidStudioProjects\gitandroid\PentruFacultate\app\src\main\java\com\example\samuel\pentrufacultate\models</dir>
@@ -202,15 +306,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/drawer_menu.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/network/LoginHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/LoginActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_register.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-        <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/models/User.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/nav_header.xml" />
         <option value="$USER_HOME$/.gradle/caches/transforms-2/files-2.1/88a11f85a9839649a79465731d5ac63c/res/values/values.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/input_step_a.xml" />
@@ -230,7 +325,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/adapter_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout-v21/allprocedure_activity.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/allProcedureActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/RegisterActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/StringHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/network/StringHelper.java" />
@@ -239,7 +333,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/input_step.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/CreateProcedureAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/input_step_b.xml" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/item_step.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/MyRecyclerViewAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/recyclerview_row.xml" />
@@ -253,12 +346,24 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/CreateProcedure.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForCreateProcedure.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_procedure_with_steps.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivationListener.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivator.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivatorFactory.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/MyService.java" />
+        <option value="$PROJECT_DIR$/pocketsphinx-android-5prealpha-release/build.gradle" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/models/Clasificator.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/SelectedProcedureFragment.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="980" />
-    <option name="height" value="910" />
+    <option name="x" value="-7" />
+    <option name="width" value="974" />
+    <option name="height" value="1087" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -266,7 +371,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -283,6 +388,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -315,22 +421,10 @@
               <item name="pentrufacultate" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="fragments" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="PentruFacultate" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="PentruFacultate" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="layout" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -340,24 +434,28 @@
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="device.picker.selection" value="Pixel_2_API_28" />
+    <property name="device.picker.selection" value="4df71e5b4007cf0f" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/values" />
-    <property name="last_opened_file_path" value="$USER_HOME$/AndroidStudioProjects/gitandroid/PentruFacultate" />
-    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+    <property name="last_opened_file_path" value="C:/Android-Continuous-SpeechRecognition-master" />
+    <property name="project.structure.last.edited" value="Dependencies" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
   </component>
   <component name="RecentsManager">
-    <key name="android.template.parentActivityClass">
-      <recent name="" />
-    </key>
-    <key name="android.template.packageName">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.example.samuel.pentrufacultate.services" />
       <recent name="com.example.samuel.pentrufacultate" />
-      <recent name="com.example.samuel.pentrufacultate.network" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\samue\AndroidStudioProjects\gitandroid\PentruFacultate\app\src\main\res\layout" />
       <recent name="C:\Users\samue\AndroidStudioProjects\gitandroid\PentruFacultate\app\src\main\java\com\example\samuel\pentrufacultate" />
       <recent name="C:\Users\samue\AndroidStudioProjects\gitandroid\PentruFacultate\app\src\main\java\com\example\samuel\pentrufacultate\test" />
       <recent name="C:\Users\samue\AndroidStudioProjects\gitandroid\PentruFacultate\app\src\main\res\drawable" />
+    </key>
+    <key name="android.template.packageName">
+      <recent name="com.example.samuel.pentrufacultate" />
+      <recent name="com.example.samuel.pentrufacultate.network" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.example.samuel.pentrufacultate" />
@@ -373,8 +471,8 @@
       <recent name="com.example.samuel.pentrufacultate.adapters" />
       <recent name="com.example.samuel.pentrufacultate.fragments" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.example.samuel.pentrufacultate" />
+    <key name="android.template.parentActivityClass">
+      <recent name="" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -462,6 +560,14 @@
       <option name="presentableId" value="Default" />
       <updated>1556725393535</updated>
     </task>
+    <task id="LOCAL-00001" summary="merge stable version of create procedures">
+      <created>1560772560287</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1560772560288</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -474,11 +580,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49910232" visible="true" weight="0.2291498" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49910232" visible="true" weight="0.40724948" />
       <window_info id="Structure" order="2" sideWeight="0.50089765" side_tool="true" weight="0.29256758" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -487,20 +592,20 @@
       <window_info id="Capture Tool" order="7" />
       <window_info id="Resources Explorer" order="8" weight="0.3295302" />
       <window_info anchor="bottom" id="Run" order="0" sideWeight="0.49932432" weight="0.35523978" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49932885" visible="true" weight="0.5186501" />
-      <window_info anchor="bottom" id="TODO" order="2" weight="0.3285968" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49932885" weight="0.31671858" />
+      <window_info anchor="bottom" id="TODO" order="2" weight="0.3283582" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3286119" />
       <window_info anchor="bottom" id="Terminal" order="4" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50067115" side_tool="true" weight="0.3796034" />
-      <window_info anchor="bottom" id="Version Control" order="6" weight="0.3286119" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.79527026" weight="0.2719547" />
-      <window_info anchor="bottom" id="Find" order="8" weight="0.32719547" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="6" visible="true" weight="0.3281412" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.79527026" weight="0.2699896" />
+      <window_info anchor="bottom" id="Find" order="8" weight="0.32669982" />
       <window_info anchor="bottom" id="Android Profiler" order="9" weight="0.32719547" />
       <window_info anchor="bottom" id="Messages" order="10" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Gradle" order="1" />
       <window_info anchor="right" id="Theme Preview" order="2" />
-      <window_info anchor="right" id="Preview" order="3" weight="0.3362416" />
+      <window_info anchor="right" id="Preview" order="3" weight="0.3360324" />
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" id="StringPreview" order="5" />
       <window_info anchor="right" id="Assistant" order="6" weight="0.3295302" />
@@ -537,6 +642,10 @@
       <window_info anchor="right" id="Assistant" order="7" weight="0.3295302" />
     </layout-to-restore>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="merge stable version of create procedures" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge stable version of create procedures" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -550,39 +659,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/logo.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-mdpi/icons8-menu-vertical-filled-100.png" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_show_more_button_with_three_dots.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure_v2.xml" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/ListViewDraggingAnimation.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/TouchListView.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/Main2Activity.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/DynamicListView.java" />
-    <entry file="file://$USER_HOME$/AndroidStudioProjects/gitandroid/PentruFacultate/app/src/main/res/layout/fragment_create_procedure_v2.xml">
-      <provider selected="true" editor-type-id="android-designer2" />
-      <provider editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/AndroidStudioProjects/gitandroid/PentruFacultate/app/src/main/res/layout/fragment_create_procedure.xml">
-      <provider selected="true" editor-type-id="android-designer2" />
-      <provider editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/adapter_layout.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/allprocedure_activity.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-v21/allprocedure_activity.xml" />
     <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/88a11f85a9839649a79465731d5ac63c/jars/classes.jar!/android/support/design/widget/TextInputLayout.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -591,22 +667,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="24" column="50" selection-start-line="24" selection-start-column="50" selection-end-line="24" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/StringHelper.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/LoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/network/StringHelper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -671,27 +732,20 @@
       <provider selected="true" editor-type-id="capture-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/input_step_a.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" selection-start-line="1" selection-end-line="7" selection-end-column="29" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/input_step_b.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="12" column="46" selection-start-line="12" selection-start-column="46" selection-end-line="12" selection-end-column="46" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7">
-          <caret line="21" column="14" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
-        </state>
-      </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cd6eb3e6d78bae56e6992137add4c3ab/jars/classes.jar!/android/support/v7/widget/RecyclerView.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -701,12 +755,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/input_step_item.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="9" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="9" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/ConfigurationFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -733,16 +787,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="40" column="34" selection-start-line="40" selection-start-column="2" selection-end-line="40" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/CreateProcedureAdapter.java" />
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/content/res/Resources.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -751,28 +795,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/allProcedureActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-154">
-          <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_display_procedures.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="16" column="20" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/display_procedure_row.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="15" column="25" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8525e79dc36593637d438347f75ff269/jars/classes.jar!/android/support/constraint/Constraints.class">
       <provider selected="true" editor-type-id="text-editor">
@@ -781,85 +818,193 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForDisplayProcedure.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/ProceduresFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="61" column="41" selection-start-line="61" selection-start-column="41" selection-end-line="61" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_create_procedure.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-584">
           <caret line="35" column="39" selection-start-line="35" selection-start-column="25" selection-end-line="35" selection-end-column="50" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_procedure_list.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor" />
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_configuration.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
-          <caret line="8" column="44" lean-forward="true" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
+          <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/CreateProcedure.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="67" column="32" lean-forward="true" selection-start-line="67" selection-start-column="32" selection-end-line="67" selection-end-column="32" />
+        <state relative-caret-position="765">
+          <caret line="67" column="32" selection-start-line="67" selection-start-column="32" selection-end-line="67" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2849#3143#0" expanded="true" />
-            <element signature="e#3142#3143#0" expanded="true" />
-            <element signature="e#3187#4286#0" expanded="true" />
-            <element signature="e#4285#4286#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/ProceduresFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="61" column="41" selection-start-line="61" selection-start-column="41" selection-end-line="61" selection-end-column="41" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/ProcedureAdapters.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-11">
-          <caret line="31" column="91" lean-forward="true" selection-start-line="31" selection-start-column="91" selection-end-line="31" selection-end-column="91" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/create_procedure_row.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_step.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+        <state relative-caret-position="357">
+          <caret line="31" column="91" selection-start-line="31" selection-start-column="91" selection-end-line="31" selection-end-column="91" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForCreateProcedure.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="41" column="13" lean-forward="true" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
+        <state relative-caret-position="459">
+          <caret line="41" column="13" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2511#2512#0" expanded="true" />
-            <element signature="e#2550#2551#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/create_procedure_row.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivationListener.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivator.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/SpeechActivatorFactory.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/services/MyService.java" />
+    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/os/Messenger.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="56" column="18" selection-start-line="56" selection-start-column="18" selection-end-line="56" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_procedure_with_steps.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="38" selection-start-line="13" selection-start-column="38" selection-end-line="13" selection-end-column="38" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_step.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/allProcedureActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-187">
+          <caret line="40" column="38" selection-start-line="40" selection-start-column="38" selection-end-line="40" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="2" selection-end-line="40" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3df13d4a52c493e5671d30def4cdcd1/jars/classes.jar!/edu/cmu/pocketsphinx/SpeechRecognizer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pocketsphinx-android-5prealpha-release/build.gradle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="518">
+          <caret line="39" column="1" selection-start-line="39" selection-start-column="1" selection-end-line="39" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+          <folding>
+            <element signature="e#276#294#0" expanded="true" />
+            <element signature="e#635#662#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/models/Clasificator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2737#2738#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForDisplaySteps.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/adapters/AdapterForDisplayProcedure.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
+          <folding>
+            <element signature="e#2230#2231#0" expanded="true" />
+            <element signature="e#2265#2266#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/samuel/pentrufacultate/fragments/SelectedProcedureFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="82" column="64" lean-forward="true" selection-start-line="82" selection-start-column="64" selection-end-line="82" selection-end-column="64" />
+          <folding>
+            <element signature="e#5451#5452#0" expanded="true" />
+            <element signature="e#5555#5556#0" expanded="true" />
+            <element signature="e#5743#5744#0" expanded="true" />
+            <element signature="e#8944#8945#0" expanded="true" />
           </folding>
         </state>
       </provider>
