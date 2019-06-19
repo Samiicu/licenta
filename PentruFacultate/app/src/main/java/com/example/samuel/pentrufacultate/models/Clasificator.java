@@ -9,7 +9,6 @@ public class Clasificator {
     }
 
 
-
     private int min3(int a, int b, int c) {
         if (a <= b && a <= c) return a;
         if (b <= a && b <= c) return b;
@@ -44,17 +43,15 @@ public class Clasificator {
 
         String givenAction = actionFromVoiceCommand.toLowerCase();
 
+        String[] startProcedure = {"start procedure", "can you start procedure"};
         String[] nextStep = {"next", "next step", "forward", "next step please"};
-
         String[] backStep = {"back", "back step", "backward", "last step", "last step please"};
-
-        String[] repeatStep = {"repeat", "repeat step", "repeat step please","repeat the last step"};
-
+        String[] repeatStep = {"repeat", "repeat step", "repeat the current step please"};
         String[] restartProcedure = {"restart", "restart procedure"};
 
 
         HashMap<String, String[]> actionGroups = new HashMap<>();
-
+        actionGroups.put("startProcedure", startProcedure);
         actionGroups.put("nextStep", nextStep);
         actionGroups.put("backStep", backStep);
         actionGroups.put("repeatStep", repeatStep);

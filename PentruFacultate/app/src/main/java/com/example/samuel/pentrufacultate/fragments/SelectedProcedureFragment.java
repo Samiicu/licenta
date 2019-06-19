@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,48 +25,72 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayProcedure;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplaySteps;
 import com.example.samuel.pentrufacultate.models.Clasificator;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
 import com.example.samuel.pentrufacultate.models.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 
-public class SelectedProcedureFragment extends Fragment implements
-        RecognitionListener {
+public class SelectedProcedureFragment extends Fragment implements RecognitionListener {
     private static final String TAG = "APP_LOG_display";
-    AdapterForDisplaySteps adapterForDisplaySteps;
-    ProcedureModel mProcedure;
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
-    TextView procedureName;
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
-
-    Clasificator clasificator = new Clasificator();
+    private TextToSpeech mTTS;
     private String uidCurrentUser;
     private User currentUser;
+    private int mCurrentStepPosition = 0;
+    AdapterForDisplaySteps adapterForDisplaySteps;
+    ProcedureModel mProcedure;
+    TextView procedureName;
+    ArrayList<String> mProcedureSteps = new ArrayList<>();
+    Clasificator clasificator = new Clasificator();
+    AudioManager amanager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         mProcedure = ProcedureModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
+        mProcedureSteps = mProcedure.getSteps();
         uidCurrentUser = bundle.getString("userUid");
         adapterForDisplaySteps = new AdapterForDisplaySteps(getContext(), mProcedure.getSteps());
         // start speech recogniser
         resetSpeechRecognizer();
+        amanager = (AudioManager) getActivity().getSystemService(getContext().AUDIO_SERVICE);
+        mTTS = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
 
-        // check for permission
+            @Override
+            public void onInit(int status) {
+
+                if (status == TextToSpeech.SUCCESS) {
+
+                    int result = mTTS.setLanguage(Locale.ENGLISH);
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    } else {
+                        Log.i(TAG, "onInit: Succesfully  init");
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
 
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
+    }
+
+    private void speak(String textForSpeech) {
+        amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
+        mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, map);
     }
 
     @Override
@@ -77,14 +103,38 @@ public class SelectedProcedureFragment extends Fragment implements
             return;
         }
 
-        AudioManager amanager = (AudioManager) getActivity().getSystemService(getContext().AUDIO_SERVICE);
-        amanager.setStreamMute(AudioManager.STREAM_NOTIFICATION, true);
-        amanager.setStreamMute(AudioManager.STREAM_ALARM, true);
         amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-        amanager.setStreamMute(AudioManager.STREAM_RING, true);
-        amanager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
-        setRecogniserIntent();
 
+
+        setRecogniserIntent();
+        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                Log.e(TAG, "onStart: speaking" );
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                if (amanager == null){
+                    Log.e(TAG, "onDone: amangerNULL");
+                }
+                if (speech == null){
+                    Log.e(TAG, "onDone: speech NULL" );
+                }
+                amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                //something here is worng
+//                speech.startListening(recognizerIntent);
+                Log.d(TAG, "onDone: speaking" );
+//
+
+                Log.d(TAG, "onDone: prepared" );
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+
+            }
+        });
         speech.startListening(recognizerIntent);
         procedureName = view.findViewById(R.id.procedure_name);
         procedureName.setText(mProcedure.getName());
@@ -96,6 +146,7 @@ public class SelectedProcedureFragment extends Fragment implements
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplaySteps);
     }
+
 
     private void setRecogniserIntent() {
 
@@ -206,30 +257,63 @@ public class SelectedProcedureFragment extends Fragment implements
 //        for (String result : matches)
 //            text += result + "\n";
         String voiceCommand = clasificator.prepareComandForED(matches.get(0));
-        if (!voiceCommand.equals("")) {
-            parseVoiceCommand(voiceCommand);
+        Log.i(TAG, "onResults: RESULT: " + matches.get(0));
+        if (!voiceCommand.equals("") && voiceCommand != null) {
+
+            final String mostProbableAction = clasificator.getMostProbableAction(voiceCommand);
+            if (mostProbableAction != null) {
+                parseVoiceCommand(mostProbableAction);
+                Log.e(TAG, "onResults: afterParseCommand");
+//                parseVoiceCommand(mostProbableAction);
+            }
             Log.i(TAG, "onResults: " + clasificator.getMostProbableAction(voiceCommand));
         } else {
             Log.i(TAG, "onResults: FAIL");
         }
-        speech.startListening(recognizerIntent);
+
     }
 
-    private void parseVoiceCommand(String voiceCommand) {
-        switch (voiceCommand) {
-            case "nextStep":
 
-                //TODO going to the next step
-                break;
-            case "backStep":
-                //TODO going to the back step
-                break;
-            case "repeatStep":
-                //TODO going to the repeat step
-                break;
-            case "restartProcedure":
-                //TODO going to the restart procedure
-                break;
+    private void parseVoiceCommand(String voiceCommand) {
+        try {
+
+
+            switch (voiceCommand) {
+                case "startProcedure":
+                    Log.i(TAG, "startProcedure: " + mProcedureSteps.get(mCurrentStepPosition));
+                    speak(mProcedureSteps.get(mCurrentStepPosition));
+                    break;
+                case "nextStep":
+                    mCurrentStepPosition++;
+                    if (mCurrentStepPosition <= mProcedureSteps.size()) {
+                        Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
+
+                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    } else {
+                        Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
+                    }
+                    break;
+                case "backStep":
+                    mCurrentStepPosition--;
+                    if (mCurrentStepPosition >= 0) {
+                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    } else {
+                        Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
+                    }
+                    break;
+                case "repeatStep":
+                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition <= mProcedureSteps.size()) {
+                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    } else {
+                        Log.e(TAG, "parseVoiceCommand: repeat step didn't exist ");
+                    }
+                    break;
+                case "restartProcedure":
+                    mCurrentStepPosition = 0;
+                    speak(mProcedureSteps.get(mCurrentStepPosition));
+                    break;
+            }
+        } catch (Exception ignored) {
 
         }
     }
@@ -261,6 +345,15 @@ public class SelectedProcedureFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onStop() {
         Log.i(TAG, "stop");
         super.onStop();
@@ -269,3 +362,4 @@ public class SelectedProcedureFragment extends Fragment implements
         }
     }
 }
+
