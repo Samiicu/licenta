@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.samuel.pentrufacultate.MainActivity;
+import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.SelectedProcedureFragment;
+import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
 
 import java.util.ArrayList;
@@ -74,13 +74,13 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
-                    SelectedProcedureFragment selectedProcedureFragment = new SelectedProcedureFragment();
+                    OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
                     Bundle bundle= new Bundle();
                     bundle.putString("ProcedureToDisplayJSON",mData.get((Integer) titleProcedure.getTag()).toJson());
                     bundle.putString("userUid",MainActivity.getUserUid());
-                    selectedProcedureFragment.setArguments(bundle);
+                    oneProcedureDisplayFragment.setArguments(bundle);
                     mMainActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, selectedProcedureFragment)
+                            .replace(R.id.fragment_container, oneProcedureDisplayFragment)
                             .addToBackStack(null)
                             .commit();
                 }

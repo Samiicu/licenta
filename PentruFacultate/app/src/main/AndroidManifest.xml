@@ -12,10 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".activities.ResetPasswordActivity" />
+        <activity android:name=".activities.RegisterActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/application_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,8 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".allProcedureActivity" />-->
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".activities.LoginActivity" />
     </application>
 
 </manifest>

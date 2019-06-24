@@ -1,7 +1,6 @@
 package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.samuel.pentrufacultate.MainActivity;
+import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.SelectedProcedureFragment;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
 
 import java.util.ArrayList;
 
