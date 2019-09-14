@@ -1,5 +1,5 @@
 debug.log
-.idea/
-.gradle/
+.idea
+.gradle
 app/app.iml
 
