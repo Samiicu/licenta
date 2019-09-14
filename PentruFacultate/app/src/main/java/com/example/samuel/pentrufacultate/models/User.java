@@ -1,5 +1,7 @@
 package com.example.samuel.pentrufacultate.models;
 
+import com.google.gson.Gson;
+
 public class User {
 
     private String username;
@@ -28,5 +30,13 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String toJson() {
+        return new Gson().toJson(this);
+    }
+
+    public static User fromJson(String jsonUser) {
+        return new Gson().fromJson(jsonUser, User.class);
     }
 }

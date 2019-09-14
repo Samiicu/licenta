@@ -27,9 +27,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String TAG = "REgister";
+    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private static final String REASON ="reason" ;
     private EditText inputEmail, inputPassword, inputName;
     private ProgressBar progressBar;
+    private String EXTRA_EMAIL="email";
+    private String EXTRA_PASSWORD="password";
+    private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
 
 
     //add Firebase Database stuff
@@ -74,9 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+                final String email = inputEmail.getText().toString().trim();
+                final String password = inputPassword.getText().toString().trim();
+                String name = inputName.getText().toString().trim();
 
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(getApplicationContext(), "Enter a name!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
                     return;
@@ -113,9 +122,15 @@ public class RegisterActivity extends AppCompatActivity {
                                     Log.d(TAG, "onComplete: user"+user.toString());
                                     Log.d(TAG, "onComplete: userUID"+user.getUid());
                                     writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
-
-
-                                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                    Intent loginIntentWithCredentials=new Intent(RegisterActivity.this, MainActivity.class);
+                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
+//                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
+//                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
+                                    loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
+                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
+                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
+                                    loginIntentWithCredentials.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    startActivity(loginIntentWithCredentials);
                                     finish();
                                 }
                             }

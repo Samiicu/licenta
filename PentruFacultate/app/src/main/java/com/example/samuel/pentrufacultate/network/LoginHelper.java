@@ -19,7 +19,7 @@ public class LoginHelper {
         auth.signOut();
         logged=false;
     }
-    public static void logedIn(){
+    public static void loggedIn(){
         logged=true;
 
     }
