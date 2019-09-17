@@ -53,6 +53,7 @@
     <string name="log_out">Log out</string>
     <string name="Name">Name</string>
     <string name="titlu_procedura">Titlu procedurii</string>
+    <string name="read_a_recipe_stored_in_a_qr">Read a recipe stored in a QR</string>
 </resources>
 
 

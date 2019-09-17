@@ -1,20 +1,19 @@
 package com.example.samuel.pentrufacultate.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.adapters.AdapterForCreateProcedure;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayProcedure;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
 import com.example.samuel.pentrufacultate.models.User;
@@ -27,8 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static android.support.v7.widget.RecyclerView.HORIZONTAL;
-import static android.support.v7.widget.RecyclerView.VERTICAL;
+import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
+import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 
 public class AllProceduresDisplayFragment extends Fragment {
     private static final String TAG = "APP_LOG_display";

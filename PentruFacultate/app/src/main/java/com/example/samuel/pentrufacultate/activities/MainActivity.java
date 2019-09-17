@@ -5,17 +5,26 @@ import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.fragment.app.Fragment;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,9 +49,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
+import barcode.BarcodeReaderFragment;
+
 import static com.example.samuel.pentrufacultate.models.StringHelper.*;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BarcodeReaderFragment.BarcodeReaderListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
     private DrawerLayout drawer;
@@ -53,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth auth;
     private String EXTRA_EMAIL = "email";
     private String EXTRA_PASSWORD = "password";
+    private static String LOGGED = "LOGGED";
     private AlertDialog alertDialog;
 
     @Override
@@ -161,6 +175,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_configuration:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ConfigurationFragment()).commit();
                 break;
+            case R.id.nav_read_qr_recipe:
+                BarcodeReaderFragment readerFragment = BarcodeReaderFragment.newInstance(true, false, View.VISIBLE);
+                readerFragment.setListener(this);
+                FragmentManager supportFragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, readerFragment);
+                fragmentTransaction.commitAllowingStateLoss();
+                break;
             case R.id.nav_logout:
                 LoginHelper.logOut();
                 startActivity(new Intent(this, LoginActivity.class));
@@ -211,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return;
                     }
                 });
+            } else if (receivedIntent.getAction().equals(LOGGED)) {
+                LoginHelper.loggedIn();
             } else {
 
                 startActivity(new Intent(this, LoginActivity.class));
@@ -271,4 +295,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (alertDialog != null) alertDialog.dismiss();
     }
 
+    @Override
+    public void onScanned(Barcode barcode) {
+        Log.i(TAG, "onScanned: " + barcode.rawValue);
+    }
+
+    @Override
+    public void onScannedMultiple(List<Barcode> barcodes) {
+        for (Barcode barcode : barcodes
+        ) {
+            Log.i(TAG, "onScannedMultiple: " + barcode.rawValue);
+        }
+    }
+
+    @Override
+    public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
+        Log.i(TAG, "onBitmapScanned: ");
+    }
+
+    @Override
+    public void onScanError(String errorMessage) {
+        Log.e(TAG, "onScanError: " + errorMessage);
+    }
+
+    @Override
+    public void onCameraPermissionDenied() {
+        Log.e(TAG, "onCameraPermissionDenied: ");
+    }
 }

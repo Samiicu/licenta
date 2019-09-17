@@ -1,8 +1,8 @@
 package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,7 +14,6 @@ import com.example.samuel.pentrufacultate.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCreateProcedure.ViewHolder> {
     private static final String TAG = "ADAPTERPRocedure";
