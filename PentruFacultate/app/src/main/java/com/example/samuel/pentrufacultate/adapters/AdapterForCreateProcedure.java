@@ -1,8 +1,11 @@
 package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
+
 import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -45,7 +48,7 @@ public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCr
         int id = position + 1;
         final String hint = "Pasul " + id;
 
-
+        holder.setIsRecyclable(false);
         holder.textInputEditText.setHint(hint);
         holder.textInputEditText.setText(dataInput.get(hint));
         holder.textInputEditText.setId(id);

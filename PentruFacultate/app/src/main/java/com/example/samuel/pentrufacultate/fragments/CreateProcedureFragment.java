@@ -1,12 +1,16 @@
 package com.example.samuel.pentrufacultate.fragments;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +36,7 @@ public class CreateProcedureFragment extends Fragment {
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mProceduresDatabase = mDatabase.child("procedures");
     Button addNewInputButton, saveProcedure;
-    private final static String TAG = "CREATE_PROCDURE";
+    private final static String TAG = CreateProcedureFragment.class.getSimpleName();
     HashMap<String, String> inputData = new HashMap<>();
     ProcedureModel procedure;
     String userUid;
@@ -49,7 +53,9 @@ public class CreateProcedureFragment extends Fragment {
 
 
         numberOfCurrentSteps = inputData.size();
-        userUid = getArguments().getString(USER_UID_EXTRA);
+        if (getArguments() != null) {
+            userUid = getArguments().getString(USER_UID_EXTRA);
+        }
         return inflater.inflate(R.layout.fragment_create_procedure, container, false);
     }
 
