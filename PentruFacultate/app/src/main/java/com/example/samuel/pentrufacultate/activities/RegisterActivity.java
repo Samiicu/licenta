@@ -125,15 +125,17 @@ public class RegisterActivity extends AppCompatActivity {
                                     user.updateProfile(profileUpdates);
                                     Log.d(TAG, "onComplete: user"+user.toString());
                                     Log.d(TAG, "onComplete: userUID"+user.getUid());
-                                    writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
+//                                    writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
                                     Intent loginIntentWithCredentials=new Intent(RegisterActivity.this, MainActivity.class);
-                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
-//                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
-//                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
-                                    loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
-                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
-                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
                                     loginIntentWithCredentials.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
+//                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
+////                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
+////                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
+
+//                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
+//                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
+
                                     startActivity(loginIntentWithCredentials);
                                     finish();
                                 }
