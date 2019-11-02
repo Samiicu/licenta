@@ -2,24 +2,10 @@ package com.example.samuel.pentrufacultate.activities;
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.fragment.app.Fragment;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -33,16 +19,29 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
-import com.example.samuel.pentrufacultate.fragments.CreateProcedureFragment;
+import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
+import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
 import com.example.samuel.pentrufacultate.models.User;
 import com.example.samuel.pentrufacultate.network.LoginHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,11 +52,19 @@ import java.util.List;
 
 import barcode.BarcodeReaderFragment;
 
-import static com.example.samuel.pentrufacultate.models.StringHelper.*;
+import static com.example.samuel.pentrufacultate.models.StringHelper.USER_UID_EXTRA;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BarcodeReaderFragment.BarcodeReaderListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
+    private static final String ACTION_SHOW_RECIPES = "show_recipes";
+
+
+    private static final String TAG_DISPLAY_RECIPES = "display_recipes_fragment";
+    private static final String TAG_CREATE_NEW_RECIPE = "create_new_recipe_fragment";
+
+    public static Fragment mCurrentFragment;
+    public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
     private TextView mEmailDispaly, mUsernameDisplay;
     private LinearLayout displayProfile;
@@ -68,73 +75,94 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String EXTRA_PASSWORD = "password";
     private static String LOGGED = "LOGGED";
     private AlertDialog alertDialog;
+    FirebaseUser mFireBaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate: ");
 
         super.onCreate(savedInstanceState);
-        checkForAutoLogin(getIntent());
+        auth = FirebaseAuth.getInstance();
+        mFireBaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mFireBaseUser != null) {
+            checkForAutoLogin(getIntent());
+            FirebaseAuth.getInstance().getCurrentUser().getUid();
+            setContentView(R.layout.activity_main);
+            mFragmentManager = getSupportFragmentManager();
 
-        setContentView(R.layout.activity_main);
-//        if (!LoginHelper.isLogged()) {
-//            startActivity(new Intent(this, LoginActivity.class));
-//            finish();
-//            return;
-//        }
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference mCurrentUserDatabaseInfo = mDatabase.child("users").child(uidCurrentUser);
+            updateProfileData(mFireBaseUser, getApplication());
+            DatabaseReference mCurrentUserDatabaseInfo = mDatabase.child("users").child(uidCurrentUser);
 
-        mCurrentUserDatabaseInfo.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onDataChange: " + dataSnapshot.getValue(User.class).getUsername());
-                currentUser = dataSnapshot.getValue(User.class);
-                updateProfileData(currentUser, getApplication());
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        mCurrentUserDatabaseInfo.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////                Log.d(TAG, "onDataChange: " + dataSnapshot.getValue(User.class).getUsername());
+//                currentUser = dataSnapshot.getValue(User.class);
+//                updateProfileData(currentUser, getApplication());
+//            }
+//
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
 //        usernameDisplay = ;
 
 
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+            drawer = findViewById(R.id.drawer_layout);
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
 
 
-        if (savedInstanceState == null) {
-            setTitle("Proceduri");
+            if (savedInstanceState == null) {
+                setTitle("Proceduri");
 //            Toolbar toolbarTitle = getTitle()findViewById(R.id.toolbar);
 //            toolbarTitle.setTitle("Proceduri");
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AllProceduresDisplayFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_procedures);
+                displayAllRecipes();
+                navigationView.setCheckedItem(R.id.nav_procedures);
+            }
+        }
+        else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
         }
 
 
     }
 
-    private void updateProfileData(User currentUser, Application application) {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "onNewIntent: ");
+
+        super.onNewIntent(intent);
+        if (intent.getAction() != null) {
+            if (intent.getAction().equals(ACTION_SHOW_RECIPES)) {
+                displayAllRecipes();
+
+            }
+        }
+    }
+
+
+    private void updateProfileData(FirebaseUser currentUser, Application application) {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
         mUsernameDisplay = linearLayout.findViewById(R.id.username_id);
         mEmailDispaly = linearLayout.findViewById(R.id.email_id);
         try {
-            mUsernameDisplay.setText(currentUser.getUsername());
+            mUsernameDisplay.setText(currentUser.getDisplayName());
         } catch (Exception e) {
         }
         ;
@@ -154,23 +182,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Toolbar toolbarTitle = findViewById(R.id.toolbar);
         switch (menuItem.getItemId()) {
             case R.id.nav_procedures:
-                toolbarTitle.setTitle("Proceduri");
-                Fragment displayProceduresFragment = new AllProceduresDisplayFragment();
-                Bundle bundleDisplay = new Bundle();
-                bundleDisplay.putString(USER_UID_EXTRA, uidCurrentUser);
-                displayProceduresFragment.setArguments(bundleDisplay);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, displayProceduresFragment).commit();
+                displayAllRecipes();
                 break;
             case R.id.nav_createProcedure:
-                toolbarTitle.setTitle("O procedura noua");
-                Fragment createFragment = new CreateProcedureFragment();
-                Bundle bundleCreate = new Bundle();
-                bundleCreate.putString(USER_UID_EXTRA, uidCurrentUser);
-                createFragment.setArguments(bundleCreate);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, createFragment).addToBackStack("tag").commit();
+                displayCreateNewRecipe();
                 break;
             case R.id.nav_configuration:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ConfigurationFragment()).commit();
@@ -178,13 +195,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_read_qr_recipe:
                 BarcodeReaderFragment readerFragment = BarcodeReaderFragment.newInstance(true, false, View.VISIBLE);
                 readerFragment.setListener(this);
-                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, readerFragment);
                 fragmentTransaction.commitAllowingStateLoss();
                 break;
             case R.id.nav_logout:
                 LoginHelper.logOut();
+                auth.signOut();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
@@ -200,47 +217,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    private void displayCreateNewRecipe() {
+        Toolbar toolbarTitle = findViewById(R.id.toolbar);
+        toolbarTitle.setTitle("O procedura noua");
+        Fragment addNewRecipe = new AddNewRecipe();
+        Bundle bundleCreate = new Bundle();
+        bundleCreate.putString(USER_UID_EXTRA, uidCurrentUser);
+        addNewRecipe.setArguments(bundleCreate);
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, addNewRecipe, TAG_CREATE_NEW_RECIPE).addToBackStack(null).commit();
+        mCurrentFragment = addNewRecipe;
+    }
+
+    public void hideMainFragmentIfNeeded() {
+        if (isMainFragment(mCurrentFragment)) {
+            Log.i(TAG, "hideMainFragmentIfNeeded: ");
+            mCurrentFragment.onPause();
+            mFragmentManager.beginTransaction().hide(mCurrentFragment).commitNow();
+        }
+    }
+
+    private boolean isMainFragment(Fragment fragment) {
+        if (fragment == null) {
+            return false;
+        } else {
+            return fragment instanceof AllProceduresDisplayFragment;
+        }
+
+    }
+
+    private void displayAllRecipes() {
+        Toolbar toolbarTitle = findViewById(R.id.toolbar);
+        toolbarTitle.setTitle("Retetele tale");
+        Fragment findFragment = mFragmentManager.findFragmentByTag(TAG_DISPLAY_RECIPES);
+        if (findFragment != null) {
+            for (int i = 0; i < mFragmentManager.getBackStackEntryCount(); ++i) {
+                mFragmentManager.popBackStack();
+            }
+
+            if (mCurrentFragment != findFragment) {
+                mFragmentManager.beginTransaction().remove(mCurrentFragment).commit();
+            }
+            mCurrentFragment = findFragment;
+        } else {
+            Fragment displayProceduresFragment = new AllProceduresDisplayFragment();
+            Bundle bundleDisplay = new Bundle();
+            bundleDisplay.putString(USER_UID_EXTRA, uidCurrentUser);
+            displayProceduresFragment.setArguments(bundleDisplay);
+            mCurrentFragment = displayProceduresFragment;
+            mFragmentManager.beginTransaction().replace(R.id.fragment_container, displayProceduresFragment, TAG_DISPLAY_RECIPES).commit();
+//            mFragmentManager.beginTransaction().setPrimaryNavigationFragment(mCurrentFragment).commitNow();
+        }
+    }
+
+
     public static String getUserUid() {
         return uidCurrentUser;
     }
 
     private void checkForAutoLogin(Intent receivedIntent) {
-        if (receivedIntent != null) {
-            Log.i(TAG, "receivedIntent!=null: ");
-            Log.i(TAG, "checkForAutoLogin: " + receivedIntent.getAction());
-            if (receivedIntent.getAction().equals(LOGIN_WITH_CREDENTIALS) && !LoginHelper.isLogged()) {
-//                Log.i(TAG, "checkForAutoLogin: email: "+receivedIntent.getStringExtra(EXTRA_EMAIL)+" pswd: "+receivedIntent.getStringExtra(EXTRA_PASSWORD));
-                setProgressDialog();
-                auth = FirebaseAuth.getInstance();
-                auth.signInWithEmailAndPassword(receivedIntent.getStringExtra(EXTRA_EMAIL),
-                        receivedIntent.getStringExtra(EXTRA_PASSWORD)).addOnSuccessListener(MainActivity.this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Log.i(TAG, "onSuccess: ");
-                        Toast.makeText(getApplicationContext(), "Login with success!", Toast.LENGTH_SHORT).show();
-                        LoginHelper.loggedIn();
-                        hideDialog();
-                    }
 
-
-                }).addOnFailureListener(MainActivity.this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i(TAG, "onFailure: ");
-                        hideDialog();
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        finish();
-                        return;
-                    }
-                });
-            } else if (receivedIntent.getAction().equals(LOGGED)) {
-                LoginHelper.loggedIn();
-            } else {
-
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                return;
-            }
+        if (auth.getCurrentUser() != null) {
+            LoginHelper.loggedIn();
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
         }
     }
 
