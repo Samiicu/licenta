@@ -65,11 +65,11 @@
         android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/save_procedure"
+            android:id="@+id/save_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Salvaeaza procedura"
+            android:text="Salvaeaza reteta"
             android:textAllCaps="false" />
     </LinearLayout>
 
