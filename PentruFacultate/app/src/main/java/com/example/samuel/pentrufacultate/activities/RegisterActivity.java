@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -119,17 +120,22 @@ public class RegisterActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     FirebaseUser user = task.getResult().getUser();
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName( inputName.getText().toString()).build();
+
+                                    user.updateProfile(profileUpdates);
                                     Log.d(TAG, "onComplete: user"+user.toString());
                                     Log.d(TAG, "onComplete: userUID"+user.getUid());
-                                    writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
+//                                    writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
                                     Intent loginIntentWithCredentials=new Intent(RegisterActivity.this, MainActivity.class);
-                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
-//                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
-//                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
-                                    loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
-                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
-                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
                                     loginIntentWithCredentials.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
+//                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
+////                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
+////                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
+
+//                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
+//                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
+
                                     startActivity(loginIntentWithCredentials);
                                     finish();
                                 }

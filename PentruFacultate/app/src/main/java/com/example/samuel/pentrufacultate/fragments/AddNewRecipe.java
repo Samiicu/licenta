@@ -1,12 +1,18 @@
 package com.example.samuel.pentrufacultate.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +30,10 @@ import java.util.HashMap;
 
 import static com.example.samuel.pentrufacultate.models.StringHelper.*;
 
-public class CreateProcedureFragment extends Fragment {
+public class AddNewRecipe extends Fragment {
 
 
+    private static final String ACTION_SHOW_RECIPES ="show_recipes" ;
     TextInputEditText nameText, procedureStepText;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -56,7 +63,7 @@ public class CreateProcedureFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         addNewInputButton = view.findViewById(R.id.add_new_input);
-        saveProcedure = view.findViewById(R.id.save_procedure);
+        saveProcedure = view.findViewById(R.id.save_recipe);
         nameText = view.findViewById(R.id.name_edit_text);
 
         //////////////
@@ -80,32 +87,40 @@ public class CreateProcedureFragment extends Fragment {
                 adapter.notifyItemInserted(numberOfCurrentSteps - 1);
             }
         });
+
         saveProcedure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> dataStorageSteps = new ArrayList<>();
 
-                String procedureName = nameText.getText().toString();
-                for (String key : inputData.keySet()) {
+                try {
+                    ArrayList<String> dataStorageSteps = new ArrayList<>();
 
-                    Log.d(TAG, "Keys order: " + key);
+                    String procedureName = nameText.getText().toString();
+                    for (String key : inputData.keySet()) {
 
-                }
-                for (int id = 1; id <= numberOfCurrentSteps; id++) {
-                    String key = "Pasul " + id;
-                    Log.d(TAG, "Values " + inputData.get(key));
+                        Log.d(TAG, "Keys order: " + key);
 
-                    String stepTextData = inputData.get(key);
-                    if (!stepTextData.equals("")) {
-                        dataStorageSteps.add(stepTextData);
                     }
+                    for (int id = 1; id <= numberOfCurrentSteps; id++) {
+                        String key = "Pasul " + id;
+                        Log.d(TAG, "Values " + inputData.get(key));
+
+                        String stepTextData = inputData.get(key);
+                        if (!stepTextData.equals("")) {
+                            dataStorageSteps.add(stepTextData);
+                        }
+                    }
+
+                    procedure = new ProcedureModel(procedureName, String.valueOf(System.currentTimeMillis()), dataStorageSteps);
+                    Log.d(TAG, "prepare_to_save " + procedure.getSteps().size());
+                    mProceduresDatabase.child(userUid).child(procedure.getName()).setValue(procedure.toJson());
+                    Intent mMenuIntent = new Intent(getContext(), MainActivity.class);
+                    mMenuIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mMenuIntent.setAction(ACTION_SHOW_RECIPES);
+                    startActivity(mMenuIntent);
+                } catch (Exception e) {
+                    Log.e(TAG, "saveProcedure onClick: ", e);
                 }
-
-                procedure = new ProcedureModel(procedureName, String.valueOf(System.currentTimeMillis()), dataStorageSteps);
-                Log.d(TAG, "prepare_to_save " + procedure.getSteps().size());
-                mProceduresDatabase.child(userUid).child(procedure.getName()).setValue(procedure.toJson());
-
-
             }
         });
     }

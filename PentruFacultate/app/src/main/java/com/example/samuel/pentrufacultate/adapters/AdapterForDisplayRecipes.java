@@ -12,12 +12,14 @@ import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
+import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 
-public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForDisplayProcedure.ViewHolder> {
+public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
     private static final String TAG = "MY_APP_Display_Fragment";
     private ArrayList<ProcedureModel> mData;
     private LayoutInflater mInflater;
@@ -26,7 +28,7 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
 
 
     // data is passed into the constructor
-    public AdapterForDisplayProcedure(Context context, ArrayList<ProcedureModel> data) {
+    public AdapterForDisplayRecipes(Context context, ArrayList<ProcedureModel> data) {
         mMainActivity = (MainActivity) context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
@@ -37,7 +39,7 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        ConstraintLayout view = (ConstraintLayout) mInflater.inflate(R.layout.display_procedure_row, parent, false);
+        FlexboxLayout view = (FlexboxLayout) mInflater.inflate(R.layout.display_procedure_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -78,10 +80,12 @@ public class AdapterForDisplayProcedure extends RecyclerView.Adapter<AdapterForD
                     Bundle bundle= new Bundle();
                     bundle.putString("ProcedureToDisplayJSON",mData.get((Integer) titleProcedure.getTag()).toJson());
                     bundle.putString("userUid",MainActivity.getUserUid());
+//                    mMainActivity.hideMainFragmentIfNeeded();
                     oneProcedureDisplayFragment.setArguments(bundle);
-                    mMainActivity.getSupportFragmentManager().beginTransaction()
+                    mMainActivity.mCurrentFragment=oneProcedureDisplayFragment;
+                    mMainActivity.mFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, oneProcedureDisplayFragment)
-                            .addToBackStack(null)
+                            .addToBackStack("one_recipe")
                             .commit();
                 }
             });

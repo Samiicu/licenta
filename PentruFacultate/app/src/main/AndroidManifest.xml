@@ -14,19 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activities.ResetPasswordActivity" />
-        <activity android:name=".activities.RegisterActivity" />
+        <activity android:launchMode="singleTask" android:name=".activities.ResetPasswordActivity" />
+        <activity android:launchMode="singleTask" android:name=".activities.RegisterActivity" />
+        <activity android:launchMode="singleTask" android:name=".activities.LoginActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/application_title"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" />
     </application>
 
 </manifest>

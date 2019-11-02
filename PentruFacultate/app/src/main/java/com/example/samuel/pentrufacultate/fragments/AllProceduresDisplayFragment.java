@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayProcedure;
+import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayRecipes;
 import com.example.samuel.pentrufacultate.models.ProcedureModel;
 import com.example.samuel.pentrufacultate.models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,21 +25,44 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 
 public class AllProceduresDisplayFragment extends Fragment {
-    private static final String TAG = "APP_LOG_display";
-    AdapterForDisplayProcedure adapterForDisplayProcedures;
+    private static final String TAG = AllProceduresDisplayFragment.class.getSimpleName();
+    AdapterForDisplayRecipes adapterForDisplayProcedures;
     private ArrayList<ProcedureModel> mProcedures;
     private String uidCurrentUser;
     private User currentUser;
 
+    @Override
+    public void onResume() {
+        Log.i(TAG, "onResume: ");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Log.i(TAG, "onPause: ");
+        super.onPause();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        Log.i(TAG, "onHiddenChanged: ");
+        super.onHiddenChanged(hidden);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView: ");
         mProcedures = new ArrayList<>();
-        adapterForDisplayProcedures = new AdapterForDisplayProcedure(getContext(), mProcedures);
+        adapterForDisplayProcedures = new AdapterForDisplayRecipes(getContext(), mProcedures);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -54,8 +76,6 @@ public class AllProceduresDisplayFragment extends Fragment {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     mProcedures.add(ProcedureModel.fromJson((String) postSnapshot.getValue()));
                     Log.d(TAG, "onDataChange: " + postSnapshot.getValue());
-
-//
                 }
                 Log.d(TAG, "onViewCreated: " + mProcedures.size());
                 adapterForDisplayProcedures.notifyDataSetChanged();
