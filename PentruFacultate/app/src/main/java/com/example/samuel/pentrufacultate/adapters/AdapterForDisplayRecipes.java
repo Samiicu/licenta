@@ -2,8 +2,10 @@ package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,38 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
 //    private final OnItemClickListener listener;
 
 
+    // stores and recycles views as they are scrolled off screen
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView titleProcedure, numberStepsProcedure;
+
+        ViewHolder(final View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: " + titleProcedure.getText());
+                    OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ProcedureToDisplayJSON", mData.get((Integer) titleProcedure.getTag()).toJson());
+                    bundle.putString("userUid", MainActivity.getUserUid());
+//                    mMainActivity.hideMainFragmentIfNeeded();
+                    oneProcedureDisplayFragment.setArguments(bundle);
+                    MainActivity.mCurrentFragment = oneProcedureDisplayFragment;
+                    mMainActivity.mFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, oneProcedureDisplayFragment)
+                            .addToBackStack("one_recipe")
+                            .commit();
+                }
+            });
+//            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
+            titleProcedure = itemView.findViewById(R.id.procedure_display_title);
+            numberStepsProcedure = itemView.findViewById(R.id.procedure_display_number_of_steps);
+
+        }
+
+
+    }
+
     // data is passed into the constructor
     public AdapterForDisplayRecipes(Context context, ArrayList<ProcedureModel> data) {
         mMainActivity = (MainActivity) context;
@@ -38,8 +72,10 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
 
-        FlexboxLayout view = (FlexboxLayout) mInflater.inflate(R.layout.display_procedure_row, parent, false);
+        FlexboxLayout view = (FlexboxLayout) inflater.inflate(R.layout.display_procedure_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -66,35 +102,4 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
     }
 
 
-    // stores and recycles views as they are scrolled off screen
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView titleProcedure, numberStepsProcedure;
-
-        ViewHolder(final View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "onClick: " + titleProcedure.getText());
-                    OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
-                    Bundle bundle= new Bundle();
-                    bundle.putString("ProcedureToDisplayJSON",mData.get((Integer) titleProcedure.getTag()).toJson());
-                    bundle.putString("userUid",MainActivity.getUserUid());
-//                    mMainActivity.hideMainFragmentIfNeeded();
-                    oneProcedureDisplayFragment.setArguments(bundle);
-                    MainActivity.mCurrentFragment =oneProcedureDisplayFragment;
-                    mMainActivity.mFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, oneProcedureDisplayFragment)
-                            .addToBackStack("one_recipe")
-                            .commit();
-                }
-            });
-//            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
-            titleProcedure = itemView.findViewById(R.id.procedure_display_title);
-            numberStepsProcedure = itemView.findViewById(R.id.procedure_display_number_of_steps);
-
-        }
-
-
-    }
 }
