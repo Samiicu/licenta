@@ -132,8 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 displayAllRecipes();
                 navigationView.setCheckedItem(R.id.nav_procedures);
             }
-        }
-        else {
+        } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
@@ -161,10 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
         mUsernameDisplay = linearLayout.findViewById(R.id.username_id);
         mEmailDispaly = linearLayout.findViewById(R.id.email_id);
-        try {
-            mUsernameDisplay.setText(currentUser.getDisplayName());
-        } catch (Exception e) {
-        }
+        mUsernameDisplay.setText(currentUser.getDisplayName());
+
         ;
         mEmailDispaly.setText(currentUser.getEmail());
     }
