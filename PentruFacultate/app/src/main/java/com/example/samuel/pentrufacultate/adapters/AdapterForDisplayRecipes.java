@@ -20,7 +20,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.util.ArrayList;
 
 public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
-    private static final String TAG = "MY_APP_Display_Fragment";
+    private static final String TAG = AdapterForDisplayRecipes.class.getSimpleName();
     private ArrayList<ProcedureModel> mData;
     private LayoutInflater mInflater;
     private MainActivity mMainActivity;
@@ -67,7 +67,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleProcedure, numberStepsProcedure;
 
         ViewHolder(final View itemView) {
@@ -82,7 +82,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                     bundle.putString("userUid",MainActivity.getUserUid());
 //                    mMainActivity.hideMainFragmentIfNeeded();
                     oneProcedureDisplayFragment.setArguments(bundle);
-                    mMainActivity.mCurrentFragment=oneProcedureDisplayFragment;
+                    MainActivity.mCurrentFragment =oneProcedureDisplayFragment;
                     mMainActivity.mFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, oneProcedureDisplayFragment)
                             .addToBackStack("one_recipe")
