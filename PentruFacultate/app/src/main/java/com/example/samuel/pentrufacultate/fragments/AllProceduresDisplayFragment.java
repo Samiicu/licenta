@@ -99,6 +99,7 @@ public class AllProceduresDisplayFragment extends Fragment {
         Log.d(TAG, "onViewCreated: " + mProcedures.size());
 //        adapter.setClickListener(this);
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), VERTICAL);
+        recyclerView.
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplayProcedures);
     }
