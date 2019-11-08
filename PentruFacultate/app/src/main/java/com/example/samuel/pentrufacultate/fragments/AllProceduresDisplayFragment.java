@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayRecipes;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +30,7 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 public class AllProceduresDisplayFragment extends Fragment {
     private static final String TAG = AllProceduresDisplayFragment.class.getSimpleName();
     AdapterForDisplayRecipes adapterForDisplayProcedures;
-    private ArrayList<ProcedureModel> mProcedures;
+    private ArrayList<RecipeModel> mProcedures;
     private String uidCurrentUser;
     private User currentUser;
 
@@ -66,7 +66,7 @@ public class AllProceduresDisplayFragment extends Fragment {
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference mCurrentUserDatabaseProcedures = mDatabase.child("procedures").child(uidCurrentUser);
+        DatabaseReference mCurrentUserDatabaseProcedures = mDatabase.child("users_data").child("recipes").child(uidCurrentUser);
 
         mCurrentUserDatabaseProcedures.addValueEventListener(new ValueEventListener() {
             @Override
@@ -74,7 +74,7 @@ public class AllProceduresDisplayFragment extends Fragment {
 
                 Log.e("Count ", "" + dataSnapshot.getChildrenCount());
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    mProcedures.add(ProcedureModel.fromJson((String) postSnapshot.getValue()));
+                    mProcedures.add(RecipeModel.fromJson((String) postSnapshot.getValue()));
                     Log.d(TAG, "onDataChange: " + postSnapshot.getValue());
                 }
                 Log.d(TAG, "onViewCreated: " + mProcedures.size());

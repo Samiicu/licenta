@@ -8,16 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 
 import java.util.ArrayList;
 
-public class ProcedureAdapters extends ArrayAdapter<ProcedureModel> {
+public class ProcedureAdapters extends ArrayAdapter<RecipeModel> {
     private int resourceLayout;
     private Context contextLayout;
-    private ArrayList<ProcedureModel> allProcedureModels;
+    private ArrayList<RecipeModel> allRecipeModels;
 
-    public ProcedureAdapters(Context context, int resource, ArrayList<ProcedureModel> objects) {
+    public ProcedureAdapters(Context context, int resource, ArrayList<RecipeModel> objects) {
         super(context, resource, objects);
         setResourceLayout(resource);
         setContextLayout(context);
@@ -25,15 +25,15 @@ public class ProcedureAdapters extends ArrayAdapter<ProcedureModel> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ProcedureModel mProcedureModel = getItem(position);
+        RecipeModel mRecipeModel = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(contextLayout).inflate(R.layout.item_procedure_list, null);
         }
         final TextView mProcedureTitle = convertView.findViewById(R.id.item_procedure_title);
         final TextView mProcedureData = convertView.findViewById(R.id.item_procedure_date);
         final TextView mProcedureDescription = convertView.findViewById(R.id.item_procedure_description);
-        mProcedureTitle.setText(mProcedureModel.getName());
-        mProcedureData.setText(mProcedureModel.getData_creation().toString());
+        mProcedureTitle.setText(mRecipeModel.getTitle());
+        mProcedureData.setText(mRecipeModel.getData_creation().toString());
 
         return convertView;
     }

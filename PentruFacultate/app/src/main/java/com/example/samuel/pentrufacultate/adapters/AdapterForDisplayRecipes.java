@@ -2,7 +2,7 @@ package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,23 +12,22 @@ import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 
 public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
-    private static final String TAG = AdapterForDisplayRecipes.class.getSimpleName();
-    private ArrayList<ProcedureModel> mData;
+    private static final String TAG = "MY_APP_Display_Fragment";
+    private ArrayList<RecipeModel> mData;
     private LayoutInflater mInflater;
     private MainActivity mMainActivity;
 //    private final OnItemClickListener listener;
 
 
     // data is passed into the constructor
-    public AdapterForDisplayRecipes(Context context, ArrayList<ProcedureModel> data) {
+    public AdapterForDisplayRecipes(Context context, ArrayList<RecipeModel> data) {
         mMainActivity = (MainActivity) context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
@@ -49,7 +48,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
 
 
 //        holder.numberProcedure.setText(String.valueOf(position + 1));
-        holder.titleProcedure.setText(mData.get(position).getName());
+        holder.titleProcedure.setText(mData.get(position).getTitle());
         holder.titleProcedure.setTag(position);
         String numarPasi = String.valueOf(mData.get(position).getSteps().size());
         String textNumarPasi;
@@ -67,7 +66,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
 
 
     // stores and recycles views as they are scrolled off screen
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleProcedure, numberStepsProcedure;
 
         ViewHolder(final View itemView) {
@@ -82,7 +81,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                     bundle.putString("userUid",MainActivity.getUserUid());
 //                    mMainActivity.hideMainFragmentIfNeeded();
                     oneProcedureDisplayFragment.setArguments(bundle);
-                    MainActivity.mCurrentFragment =oneProcedureDisplayFragment;
+                    mMainActivity.mCurrentFragment=oneProcedureDisplayFragment;
                     mMainActivity.mFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, oneProcedureDisplayFragment)
                             .addToBackStack("one_recipe")

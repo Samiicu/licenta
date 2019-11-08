@@ -1,1 +1,1 @@
-include ':app', ':barcodeReader'
+include ':app'
