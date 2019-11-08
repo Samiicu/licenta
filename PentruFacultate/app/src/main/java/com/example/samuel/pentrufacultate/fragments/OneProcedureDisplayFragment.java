@@ -28,7 +28,7 @@ import android.widget.TextView;
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplaySteps;
 import com.example.samuel.pentrufacultate.models.EditDistanceCalculator;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     private String voiceInput;
     private int mCurrentStepPosition = 0;
     AdapterForDisplaySteps adapterForDisplaySteps;
-    ProcedureModel mProcedure;
+    RecipeModel mProcedure;
     TextView procedureName;
     ArrayList<String> mProcedureSteps = new ArrayList<>();
     EditDistanceCalculator editDistanceCalculator = new EditDistanceCalculator();
@@ -58,7 +58,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        mProcedure = ProcedureModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
+        mProcedure = RecipeModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
         mProcedureSteps = mProcedure.getSteps();
         uidCurrentUser = bundle.getString("userUid");
         adapterForDisplaySteps = new AdapterForDisplaySteps(getContext(), mProcedure.getSteps());
@@ -144,7 +144,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         });
         speech.startListening(recognizerIntent);
         procedureName = view.findViewById(R.id.procedure_name);
-        procedureName.setText(mProcedure.getName());
+        procedureName.setText(mProcedure.getTitle());
         RecyclerView recyclerView = view.findViewById(R.id.display_all_steps);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         Log.d(TAG, "onViewCreated: " + recyclerView);

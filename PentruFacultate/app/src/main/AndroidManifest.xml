@@ -14,9 +14,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:launchMode="singleTask" android:name=".activities.ResetPasswordActivity" />
-        <activity android:launchMode="singleTask" android:name=".activities.RegisterActivity" />
-        <activity android:launchMode="singleTask" android:name=".activities.LoginActivity" />
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.DecoderActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/application_title"

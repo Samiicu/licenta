@@ -1,25 +1,16 @@
 package com.example.samuel.pentrufacultate.activities;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.app.DownloadManager;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,19 +18,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
-import com.example.samuel.pentrufacultate.models.User;
-import com.example.samuel.pentrufacultate.network.LoginHelper;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.barcode.Barcode;
+import com.example.samuel.pentrufacultate.models.QrLoader;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
+import com.example.samuel.pentrufacultate.models.StringHelper;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,15 +35,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
-import barcode.BarcodeReaderFragment;
-
+import static com.example.samuel.pentrufacultate.models.StringHelper.REQUEST_CODE_QR_READER;
+import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_READER;
+import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_READER_SUCCESS;
 import static com.example.samuel.pentrufacultate.models.StringHelper.USER_UID_EXTRA;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BarcodeReaderFragment.BarcodeReaderListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
     private static final String ACTION_SHOW_RECIPES = "show_recipes";
 
 
@@ -66,15 +51,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Fragment mCurrentFragment;
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
-    private TextView mEmailDispaly, mUsernameDisplay;
-    private LinearLayout displayProfile;
+    private TextView mEmailDisplay, mUsernameDisplay;
     private static String uidCurrentUser;
-    private User currentUser;
     private FirebaseAuth auth;
-    private String EXTRA_EMAIL = "email";
-    private String EXTRA_PASSWORD = "password";
-    private static String LOGGED = "LOGGED";
-    private AlertDialog alertDialog;
+    DatabaseReference mDatabase;
+    DatabaseReference mLoadRecipeReference;
+
     FirebaseUser mFireBaseUser;
 
     @Override
@@ -85,12 +67,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         auth = FirebaseAuth.getInstance();
         mFireBaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFireBaseUser != null) {
-            checkForAutoLogin(getIntent());
+            checkTheCredentials();
             FirebaseAuth.getInstance().getCurrentUser().getUid();
             setContentView(R.layout.activity_main);
             mFragmentManager = getSupportFragmentManager();
 
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            mDatabase = FirebaseDatabase.getInstance().getReference();
             uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             updateProfileData(mFireBaseUser, getApplication());
@@ -132,8 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 displayAllRecipes();
                 navigationView.setCheckedItem(R.id.nav_procedures);
             }
-        }
-        else {
+        } else {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
@@ -154,19 +135,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (StringHelper.REQUEST_CODE_QR_READER == requestCode) {
+            if (resultCode == RESULT_QR_READER_SUCCESS) {
+                if (QrLoader.isValidQrData(data)) {
+
+                    mLoadRecipeReference = mDatabase.child(QrLoader.getRecipeUri(data));
+                    mLoadRecipeReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            RecipeModel loadedRecipe = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                            Log.i(TAG, "onDataChange: ");
+                            QrLoader.loadRecipe(loadedRecipe, mDatabase, uidCurrentUser);
+                            mLoadRecipeReference.removeEventListener(this);
+                            mLoadRecipeReference=null;
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            mLoadRecipeReference.removeEventListener(this);
+                            mLoadRecipeReference=null;
+                        }
+                    });
+                }
+                Log.i(TAG, "onActivityResult: " + data.getStringExtra(RESULT_QR_READER));
+            }
+        }
+    }
+
 
     private void updateProfileData(FirebaseUser currentUser, Application application) {
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
         mUsernameDisplay = linearLayout.findViewById(R.id.username_id);
-        mEmailDispaly = linearLayout.findViewById(R.id.email_id);
-        try {
-            mUsernameDisplay.setText(currentUser.getDisplayName());
-        } catch (Exception e) {
-        }
-        ;
-        mEmailDispaly.setText(currentUser.getEmail());
+        mEmailDisplay = linearLayout.findViewById(R.id.email_id);
+        mUsernameDisplay.setText(currentUser.getDisplayName());
+        mEmailDisplay.setText(currentUser.getEmail());
     }
 
 
@@ -193,14 +198,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ConfigurationFragment()).commit();
                 break;
             case R.id.nav_read_qr_recipe:
-                BarcodeReaderFragment readerFragment = BarcodeReaderFragment.newInstance(true, false, View.VISIBLE);
-                readerFragment.setListener(this);
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, readerFragment);
-                fragmentTransaction.commitAllowingStateLoss();
+                startActivityForResult(new Intent(this, DecoderActivity.class), REQUEST_CODE_QR_READER);
                 break;
             case R.id.nav_logout:
-                LoginHelper.logOut();
                 auth.signOut();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
@@ -228,23 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mCurrentFragment = addNewRecipe;
     }
 
-    public void hideMainFragmentIfNeeded() {
-        if (isMainFragment(mCurrentFragment)) {
-            Log.i(TAG, "hideMainFragmentIfNeeded: ");
-            mCurrentFragment.onPause();
-            mFragmentManager.beginTransaction().hide(mCurrentFragment).commitNow();
-        }
-    }
-
-    private boolean isMainFragment(Fragment fragment) {
-        if (fragment == null) {
-            return false;
-        } else {
-            return fragment instanceof AllProceduresDisplayFragment;
-        }
-
-    }
-
     private void displayAllRecipes() {
         Toolbar toolbarTitle = findViewById(R.id.toolbar);
         toolbarTitle.setTitle("Retetele tale");
@@ -269,97 +252,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     public static String getUserUid() {
         return uidCurrentUser;
     }
 
-    private void checkForAutoLogin(Intent receivedIntent) {
-
-        if (auth.getCurrentUser() != null) {
-            LoginHelper.loggedIn();
-        } else {
+    private void checkTheCredentials() {
+        if (auth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-    }
-
-
-    public void setProgressDialog() {
-
-        int llPadding = 30;
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
-        ll.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        llParam.gravity = Gravity.CENTER;
-        ll.setLayoutParams(llParam);
-
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        progressBar.setPadding(0, 0, llPadding, 0);
-        progressBar.setLayoutParams(llParam);
-
-        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        llParam.gravity = Gravity.CENTER;
-        TextView tvText = new TextView(this);
-        tvText.setText("Logging ...");
-        tvText.setTextColor(Color.parseColor("#000000"));
-        tvText.setTextSize(20);
-        tvText.setLayoutParams(llParam);
-
-        ll.addView(progressBar);
-        ll.addView(tvText);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setView(ll);
-
-        alertDialog = builder.create();
-        alertDialog.show();
-        Window window = alertDialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            alertDialog.getWindow().setAttributes(layoutParams);
-        }
-    }
-
-    private void hideDialog() {
-        if (alertDialog != null) alertDialog.dismiss();
-    }
-
-    @Override
-    public void onScanned(Barcode barcode) {
-        Log.i(TAG, "onScanned: " + barcode.rawValue);
-    }
-
-    @Override
-    public void onScannedMultiple(List<Barcode> barcodes) {
-        for (Barcode barcode : barcodes
-        ) {
-            Log.i(TAG, "onScannedMultiple: " + barcode.rawValue);
-        }
-    }
-
-    @Override
-    public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
-        Log.i(TAG, "onBitmapScanned: ");
-    }
-
-    @Override
-    public void onScanError(String errorMessage) {
-        Log.e(TAG, "onScanError: " + errorMessage);
-    }
-
-    @Override
-    public void onCameraPermissionDenied() {
-        Log.e(TAG, "onCameraPermissionDenied: ");
     }
 }
