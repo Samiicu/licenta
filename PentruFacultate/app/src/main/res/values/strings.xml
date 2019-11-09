@@ -54,6 +54,8 @@
     <string name="Name">Name</string>
     <string name="titlu_procedura">Titlu procedurii</string>
     <string name="read_a_recipe_stored_in_a_qr">Read a recipe stored in a QR</string>
+    <string name="snack_bar_text">Reteta a fost stearsa.</string>
+    <string name="snack_bar_undo">Undo</string>
 </resources>
 
 

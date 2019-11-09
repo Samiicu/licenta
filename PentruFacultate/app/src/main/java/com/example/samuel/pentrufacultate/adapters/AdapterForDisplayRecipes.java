@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +14,29 @@ import android.widget.TextView;
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
+import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
     private static final String TAG = "MY_APP_Display_Fragment";
     private ArrayList<RecipeModel> mData;
+    private RecipeModel mRecentlyDeletedItem;
+    private int mRecentlyDeletedItemPosition;
     private LayoutInflater mInflater;
+    private boolean deleteReverted = false;
     private MainActivity mMainActivity;
+
+    public void deleteItem(int position) {
+        mRecentlyDeletedItem = mData.get(position);
+        mRecentlyDeletedItemPosition = position;
+        mData.remove(position);
+        notifyItemRemoved(position);
+        showUndoSnackbar();
+    }
 //    private final OnItemClickListener listener;
 
 
@@ -38,8 +52,8 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
                     OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString("ProcedureToDisplayJSON", mData.get((Integer) titleProcedure.getTag()).toJson());
-                    bundle.putString("userUid", MainActivity.getUserUid());
+                    bundle.putString("ProcedureToDisplayJSON", DataManager.getDmInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
+                    bundle.putString("userUid", DataManager.getDmInstance(mMainActivity).getCurrentUserUid());
 //                    mMainActivity.hideMainFragmentIfNeeded();
                     oneProcedureDisplayFragment.setArguments(bundle);
                     MainActivity.mCurrentFragment = oneProcedureDisplayFragment;
@@ -98,5 +112,32 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
         return mData.size();
     }
 
+    private void showUndoSnackbar() {
+        deleteReverted = false;
+        View view = mMainActivity.findViewById(R.id.drawer_layout);
+        Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.snack_bar_undo, v -> undoDelete());
 
+        Snackbar.Callback snackBarCallBack = new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+                if (!deleteReverted) {
+                    DataManager.getDmInstance(mMainActivity).removeRecipeFromDatabase(mRecentlyDeletedItem);
+                }
+            }
+        };
+        snackbar.addCallback(snackBarCallBack);
+
+        snackbar.show();
+
+    }
+
+    private void undoDelete() {
+        deleteReverted = true;
+        mData.add(mRecentlyDeletedItemPosition,
+                mRecentlyDeletedItem);
+        notifyItemInserted(mRecentlyDeletedItemPosition);
+    }
 }

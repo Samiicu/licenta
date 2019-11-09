@@ -23,6 +23,7 @@ import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
+import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.QrLoader;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.StringHelper;
@@ -52,10 +53,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
     private TextView mEmailDisplay, mUsernameDisplay;
-    private static String uidCurrentUser;
+//    private static String uidCurrentUser;
     private FirebaseAuth auth;
     DatabaseReference mDatabase;
     DatabaseReference mLoadRecipeReference;
+    DataManager mDataManager;
 
     FirebaseUser mFireBaseUser;
 
@@ -71,31 +73,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseAuth.getInstance().getCurrentUser().getUid();
             setContentView(R.layout.activity_main);
             mFragmentManager = getSupportFragmentManager();
-
+            mDataManager = DataManager.getDmInstance(this);
             mDatabase = FirebaseDatabase.getInstance().getReference();
-            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             updateProfileData(mFireBaseUser, getApplication());
-            DatabaseReference mCurrentUserDatabaseInfo = mDatabase.child("users").child(uidCurrentUser);
 
-//        mCurrentUserDatabaseInfo.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-////                Log.d(TAG, "onDataChange: " + dataSnapshot.getValue(User.class).getUsername());
-//                currentUser = dataSnapshot.getValue(User.class);
-//                updateProfileData(currentUser, getApplication());
-//            }
-//
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-
-//        usernameDisplay = ;
 
 
             drawer = findViewById(R.id.drawer_layout);
@@ -147,15 +132,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             RecipeModel loadedRecipe = RecipeModel.fromJson((String) dataSnapshot.getValue());
                             Log.i(TAG, "onDataChange: ");
-                            QrLoader.loadRecipe(loadedRecipe, mDatabase, uidCurrentUser);
+                            QrLoader.loadRecipe(loadedRecipe, mDatabase, mDataManager.getCurrentUserUid());
                             mLoadRecipeReference.removeEventListener(this);
-                            mLoadRecipeReference=null;
+                            mLoadRecipeReference = null;
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             mLoadRecipeReference.removeEventListener(this);
-                            mLoadRecipeReference=null;
+                            mLoadRecipeReference = null;
                         }
                     });
                 }
@@ -222,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbarTitle.setTitle("O procedura noua");
         Fragment addNewRecipe = new AddNewRecipe();
         Bundle bundleCreate = new Bundle();
-        bundleCreate.putString(USER_UID_EXTRA, uidCurrentUser);
+        bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
         addNewRecipe.setArguments(bundleCreate);
         mFragmentManager.beginTransaction().replace(R.id.fragment_container, addNewRecipe, TAG_CREATE_NEW_RECIPE).addToBackStack(null).commit();
         mCurrentFragment = addNewRecipe;
@@ -244,16 +229,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Fragment displayProceduresFragment = new AllProceduresDisplayFragment();
             Bundle bundleDisplay = new Bundle();
-            bundleDisplay.putString(USER_UID_EXTRA, uidCurrentUser);
+            bundleDisplay.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
             displayProceduresFragment.setArguments(bundleDisplay);
             mCurrentFragment = displayProceduresFragment;
             mFragmentManager.beginTransaction().replace(R.id.fragment_container, displayProceduresFragment, TAG_DISPLAY_RECIPES).commit();
-//            mFragmentManager.beginTransaction().setPrimaryNavigationFragment(mCurrentFragment).commitNow();
         }
-    }
-
-    public static String getUserUid() {
-        return uidCurrentUser;
     }
 
     private void checkTheCredentials() {
