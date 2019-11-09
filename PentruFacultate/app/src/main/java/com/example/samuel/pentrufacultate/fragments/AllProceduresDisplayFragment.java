@@ -24,7 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,8 +32,9 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 public class AllProceduresDisplayFragment extends Fragment {
     private static final String TAG = AllProceduresDisplayFragment.class.getSimpleName();
     AdapterForDisplayRecipes adapterForDisplayProcedures;
-    private ArrayList<RecipeModel> mProcedures;
+    private ArrayList<RecipeModel> mProcedures = new ArrayList<>();
     private String uidCurrentUser;
+    RecyclerView recyclerViewListOfRecipes;
     private User currentUser;
 
     @Override
@@ -65,7 +65,7 @@ public class AllProceduresDisplayFragment extends Fragment {
         mCurrentUserDatabaseProcedures.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                ProcedureModel receivedProcedure = ProcedureModel.fromJson((String) dataSnapshot.getValue());
+                RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
                 mProcedures.add(receivedProcedure);
                 adapterForDisplayProcedures.notifyItemInserted(mProcedures.indexOf(receivedProcedure));
                 Log.i(TAG, "onChildAdded: " + dataSnapshot);
@@ -74,10 +74,10 @@ public class AllProceduresDisplayFragment extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.i(TAG, "onChildChanged: " + dataSnapshot);
-                final ProcedureModel receivedProcedure = ProcedureModel.fromJson((String) dataSnapshot.getValue());
-                for (ProcedureModel procedureModel : mProcedures
+                final RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                for (RecipeModel procedureModel : mProcedures
                 ) {
-                    if (procedureModel.getName().equals(receivedProcedure.getName())) {
+                    if (procedureModel.getTitle().equals(receivedProcedure.getTitle())) {
                         int positionBeforeRemoving = mProcedures.indexOf(procedureModel);
                         mProcedures.remove(procedureModel);
                         adapterForDisplayProcedures.notifyItemRemoved(positionBeforeRemoving);
@@ -90,10 +90,12 @@ public class AllProceduresDisplayFragment extends Fragment {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Log.i(TAG, "onChildRemoved: " + dataSnapshot);
-                ProcedureModel receivedProcedure = ProcedureModel.fromJson((String) dataSnapshot.getValue());
-                int removedIndex = mProcedures.indexOf(receivedProcedure);
-                mProcedures.remove(receivedProcedure);
+                RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                int removedIndex = getIndexOfRecipe(receivedProcedure);
+                mProcedures.remove(removedIndex);
+                recyclerViewListOfRecipes.removeViewAt(removedIndex);
                 adapterForDisplayProcedures.notifyItemRemoved(removedIndex);
+                adapterForDisplayProcedures.notifyItemRangeChanged(removedIndex, mProcedures.size());
             }
 
             @Override
@@ -108,6 +110,16 @@ public class AllProceduresDisplayFragment extends Fragment {
         });
     }
 
+    private int getIndexOfRecipe(RecipeModel receivedProcedure) {
+        for (int i = 0; i < mProcedures.size(); i++) {
+            if (mProcedures.get(i).getTitle().equals(receivedProcedure.getTitle())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -121,13 +133,13 @@ public class AllProceduresDisplayFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = view.findViewById(R.id.display_all_procedure);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Log.d(TAG, "onViewCreated: " + recyclerView);
+        recyclerViewListOfRecipes = view.findViewById(R.id.display_all_procedure);
+        recyclerViewListOfRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
+        Log.d(TAG, "onViewCreated: " + recyclerViewListOfRecipes);
         Log.d(TAG, "onViewCreated: " + mProcedures.size());
 //        adapter.setClickListener(this);
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), VERTICAL);
-        recyclerView.addItemDecoration(itemDecor);
-        recyclerView.setAdapter(adapterForDisplayProcedures);
+        recyclerViewListOfRecipes.addItemDecoration(itemDecor);
+        recyclerViewListOfRecipes.setAdapter(adapterForDisplayProcedures);
     }
 }
