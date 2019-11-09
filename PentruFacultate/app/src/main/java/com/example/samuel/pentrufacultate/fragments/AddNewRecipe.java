@@ -21,7 +21,7 @@ import android.widget.Button;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForCreateProcedure;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,11 +37,12 @@ public class AddNewRecipe extends Fragment {
     TextInputEditText nameText, procedureStepText;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference mProceduresDatabase = mDatabase.child("procedures");
+
+    private DatabaseReference mProceduresDatabase = mDatabase.child("users_data").child("recipes");
     Button addNewInputButton, saveProcedure;
     private final static String TAG = "CREATE_PROCDURE";
     HashMap<String, String> inputData = new HashMap<>();
-    ProcedureModel procedure;
+    RecipeModel procedure;
     String userUid;
     AdapterForCreateProcedure adapter;
     int numberOfCurrentSteps;
@@ -111,9 +112,9 @@ public class AddNewRecipe extends Fragment {
                         }
                     }
 
-                    procedure = new ProcedureModel(procedureName, String.valueOf(System.currentTimeMillis()), dataStorageSteps);
+                    procedure = new RecipeModel(procedureName, String.valueOf(System.currentTimeMillis()), dataStorageSteps);
                     Log.d(TAG, "prepare_to_save " + procedure.getSteps().size());
-                    mProceduresDatabase.child(userUid).child(procedure.getName()).setValue(procedure.toJson());
+                    mProceduresDatabase.child(userUid).child(procedure.getTitle()).setValue(procedure.toJson());
                     Intent mMenuIntent = new Intent(getContext(), MainActivity.class);
                     mMenuIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mMenuIntent.setAction(ACTION_SHOW_RECIPES);

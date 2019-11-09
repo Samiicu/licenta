@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayRecipes;
-import com.example.samuel.pentrufacultate.models.ProcedureModel;
+import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -33,7 +33,7 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 public class AllProceduresDisplayFragment extends Fragment {
     private static final String TAG = AllProceduresDisplayFragment.class.getSimpleName();
     AdapterForDisplayRecipes adapterForDisplayProcedures;
-    private ArrayList<ProcedureModel> mProcedures = new ArrayList<>();
+    private ArrayList<RecipeModel> mProcedures;
     private String uidCurrentUser;
     private User currentUser;
 
@@ -60,7 +60,7 @@ public class AllProceduresDisplayFragment extends Fragment {
         super.onCreate(savedInstanceState);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference mCurrentUserDatabaseProcedures = mDatabase.child("procedures").child(uidCurrentUser);
+        DatabaseReference mCurrentUserDatabaseProcedures = mDatabase.child("users_data").child("recipes").child(uidCurrentUser);
 
         mCurrentUserDatabaseProcedures.addChildEventListener(new ChildEventListener() {
             @Override
