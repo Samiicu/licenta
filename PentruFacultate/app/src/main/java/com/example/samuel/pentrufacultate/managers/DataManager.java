@@ -3,6 +3,7 @@ package com.example.samuel.pentrufacultate.managers;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,8 +45,9 @@ public class DataManager {
     //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
+    private ChildEventListener mChildEventListenerRecips;
 
-    public static DataManager getDmInstance(Context context) {
+    public static DataManager getInstance(Context context) {
         if (dataManagerInstance == null) {
             dataManagerInstance = new DataManager();
             dataManagerInstance.firebaseReferences = new HashMap<>();
@@ -101,58 +103,60 @@ public class DataManager {
 
 
     public void addListenerForDbRecipes() {
-//        dataManagerInstance.mLayoutDisplayAllRecipes = layoutDisplayAllRecipes;
-        dataManagerInstance.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
-                dataManagerInstance.mRecipesData.add(receivedProcedure);
-                dataManagerInstance.mAdapterForDisplayRecipes.notifyItemInserted(dataManagerInstance.mRecipesData.indexOf(receivedProcedure));
-                Log.i(TAG, "onChildAdded: " + dataSnapshot);
-            }
+        // create and add the eventChildListener just once per DataManagerInstance
+        if (this.mChildEventListenerRecips == null) {
+            // create
+            mChildEventListenerRecips = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                    dataManagerInstance.mRecipesData.add(receivedProcedure);
+                    dataManagerInstance.mAdapterForDisplayRecipes.notifyItemInserted(dataManagerInstance.mRecipesData.indexOf(receivedProcedure));
+                    Log.i(TAG, "onChildAdded: " + dataSnapshot);
+                }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.i(TAG, "onChildChanged: " + dataSnapshot);
-                final RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
-                for (RecipeModel procedureModel : dataManagerInstance.mRecipesData
-                ) {
-                    if (procedureModel.getTitle().equals(receivedProcedure.getTitle())) {
-                        int positionBeforeRemoving = dataManagerInstance.mRecipesData.indexOf(procedureModel);
-                        dataManagerInstance.mRecipesData.remove(procedureModel);
-                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(positionBeforeRemoving);
-                        dataManagerInstance.mRecipesData.add(receivedProcedure);
-                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemInserted(dataManagerInstance.mRecipesData.indexOf(receivedProcedure));
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.i(TAG, "onChildChanged: " + dataSnapshot);
+                    final RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                    for (RecipeModel procedureModel : dataManagerInstance.mRecipesData
+                    ) {
+                        if (procedureModel.getTitle().equals(receivedProcedure.getTitle())) {
+                            int positionBeforeRemoving = dataManagerInstance.mRecipesData.indexOf(procedureModel);
+                            dataManagerInstance.mRecipesData.remove(procedureModel);
+                            dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(positionBeforeRemoving);
+                            dataManagerInstance.mRecipesData.add(receivedProcedure);
+                            dataManagerInstance.mAdapterForDisplayRecipes.notifyItemInserted(dataManagerInstance.mRecipesData.indexOf(receivedProcedure));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.i(TAG, "onChildRemoved: " + dataSnapshot);
-                RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
-                int removedIndex = getIndexOfRecipe(receivedProcedure.getTitle());
-                if (removedIndex != -1) {
-                    dataManagerInstance.mRecipesData.remove(removedIndex);
-                    dataManagerInstance.mLayoutDisplayAllRecipes.removeViewAt(removedIndex);
-                    dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(removedIndex);
-                    dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRangeChanged(removedIndex, dataManagerInstance.mRecipesData.size());
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Log.i(TAG, "onChildRemoved: " + dataSnapshot);
+                    RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
+                    int removedIndex = getIndexOfRecipe(receivedProcedure.getTitle());
+                    if (removedIndex != -1) {
+                        dataManagerInstance.mRecipesData.remove(removedIndex);
+                        dataManagerInstance.mLayoutDisplayAllRecipes.removeViewAt(removedIndex);
+                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(removedIndex);
+                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRangeChanged(removedIndex, dataManagerInstance.mRecipesData.size());
+                    }
                 }
-            }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.i(TAG, "onChildMoved: " + dataSnapshot);
-            }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.i(TAG, "onChildMoved: " + dataSnapshot);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-    }
-
-    public void loadRecipeFromQr(String path) {
+                }
+            };
+            // add
+            dataManagerInstance.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF).addChildEventListener(mChildEventListenerRecips);
+        }
 
     }
 
@@ -160,22 +164,28 @@ public class DataManager {
         return dataManagerInstance.currentUser.getUid();
     }
 
-    public AdapterForDisplayRecipes getmAdapterForDisplayRecipes() {
+    public AdapterForDisplayRecipes getAdapterForDisplayRecipes() {
         return dataManagerInstance.mAdapterForDisplayRecipes;
     }
 
-    public void addLayoutForDisplayAllRecipes(RecyclerView recyclerViewListOfRecipes, Context context) {
+    public RecyclerView addLayoutForDisplayAllRecipes(RecyclerView recyclerViewListOfRecipes, Context context) {
+
         this.mLayoutDisplayAllRecipes = recyclerViewListOfRecipes;
+        this.mLayoutDisplayAllRecipes.refreshDrawableState();
         this.mLayoutDisplayAllRecipes.setLayoutManager(new LinearLayoutManager(context));
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, VERTICAL);
         this.mLayoutDisplayAllRecipes.addItemDecoration(itemDecor);
-        this.mLayoutDisplayAllRecipes.setAdapter(dataManagerInstance.mAdapterForDisplayRecipes);
+        this.mLayoutDisplayAllRecipes.setAdapter(this.mAdapterForDisplayRecipes);
+
         ItemTouchHelper itemTouchHelper = new
                 ItemTouchHelper(new SwipeToDeleteCallback(context));
-        itemTouchHelper.attachToRecyclerView(dataManagerInstance.mLayoutDisplayAllRecipes);
+        itemTouchHelper.attachToRecyclerView(this.mLayoutDisplayAllRecipes);
+        return this.mLayoutDisplayAllRecipes;
+
     }
 
     public void removeRecipeFromDatabase(RecipeModel recipe) {
+        Log.i(TAG, "removeRecipeFromDatabase: ");
         this.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF)
                 .child(recipe.getTitle()).removeValue();
     }
