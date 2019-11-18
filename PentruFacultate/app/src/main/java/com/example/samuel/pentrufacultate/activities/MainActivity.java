@@ -42,7 +42,7 @@ import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_R
 import static com.example.samuel.pentrufacultate.models.StringHelper.USER_UID_EXTRA;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = StringHelper.getTag(MainActivity.class, null);
     private static final String ACTION_SHOW_RECIPES = "show_recipes";
 
 
@@ -53,13 +53,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
     private TextView mEmailDisplay, mUsernameDisplay;
-//    private static String uidCurrentUser;
+    //    private static String uidCurrentUser;
     private FirebaseAuth auth;
     DatabaseReference mDatabase;
     DatabaseReference mLoadRecipeReference;
     DataManager mDataManager;
 
     FirebaseUser mFireBaseUser;
+
+    @Override
+    protected void onStop() {
+        Log.i(TAG, "onStop: ");
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseAuth.getInstance().getCurrentUser().getUid();
             setContentView(R.layout.activity_main);
             mFragmentManager = getSupportFragmentManager();
-            mDataManager = DataManager.getDmInstance(this);
+            mDataManager = DataManager.getInstance(this);
             mDatabase = FirebaseDatabase.getInstance().getReference();
 //            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -165,9 +171,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (isLastFragment()) {
+                moveTaskToBack(true);
+            } else {
+                super.onBackPressed();
+            }
         }
-
     }
 
     @Override
@@ -241,5 +250,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume: ");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, "onPause: ");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        Log.i(TAG, "onResumeFragments: ");
+        super.onResumeFragments();
+    }
+    private boolean isLastFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+       return fragmentManager.getBackStackEntryCount() == 0;
     }
 }

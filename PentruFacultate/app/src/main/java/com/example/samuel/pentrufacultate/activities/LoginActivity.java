@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     public static final String ACCOUNT_TYPE = "com.example.samuel.pentrufacultate.account";
+    public static final String TAG = LoginActivity.class.getSimpleName();
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
@@ -34,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.i(TAG, "onCreate: ");
 //        if (auth.getCurrentUser() != null) {
 //            LoginHelper.logIn();
 //            startActivity(new Intent(LoginActivity.this, MainActivity.class));
