@@ -13,16 +13,18 @@ import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
+import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
+import com.example.samuel.pentrufacultate.models.StringHelper;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
-    private static final String TAG = "MY_APP_Display_Fragment";
+    private static final String TAG = StringHelper.getTag(AllProceduresDisplayFragment.class, AdapterForDisplayRecipes.class);
     private ArrayList<RecipeModel> mData;
     private RecipeModel mRecentlyDeletedItem;
     private int mRecentlyDeletedItemPosition;
@@ -52,8 +54,8 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
                     OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString("ProcedureToDisplayJSON", DataManager.getDmInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
-                    bundle.putString("userUid", DataManager.getDmInstance(mMainActivity).getCurrentUserUid());
+                    bundle.putString("ProcedureToDisplayJSON", DataManager.getInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
+                    bundle.putString("userUid", DataManager.getInstance(mMainActivity).getCurrentUserUid());
 //                    mMainActivity.hideMainFragmentIfNeeded();
                     oneProcedureDisplayFragment.setArguments(bundle);
                     MainActivity.mCurrentFragment = oneProcedureDisplayFragment;
@@ -113,6 +115,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
     }
 
     private void showUndoSnackbar() {
+        Log.i(TAG, "showUndoSnackbar: ");
         deleteReverted = false;
         View view = mMainActivity.findViewById(R.id.drawer_layout);
         Snackbar snackbar = Snackbar.make(view, R.string.snack_bar_text,
@@ -124,7 +127,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if (!deleteReverted) {
-                    DataManager.getDmInstance(mMainActivity).removeRecipeFromDatabase(mRecentlyDeletedItem);
+                    DataManager.getInstance(mMainActivity).removeRecipeFromDatabase(mRecentlyDeletedItem);
                 }
             }
         };
@@ -135,6 +138,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
     }
 
     private void undoDelete() {
+        Log.i(TAG, "undoDelete: ");
         deleteReverted = true;
         mData.add(mRecentlyDeletedItemPosition,
                 mRecentlyDeletedItem);

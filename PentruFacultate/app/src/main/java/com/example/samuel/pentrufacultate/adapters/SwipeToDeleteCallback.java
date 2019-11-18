@@ -22,7 +22,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     private final ColorDrawable background;
 
     public SwipeToDeleteCallback(Context context) {
-        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.LEFT);
         mContext = context;
         icon = ContextCompat.getDrawable(mContext,
                 R.drawable.ic_delete_swipe);
@@ -84,6 +84,6 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        DataManager.getDmInstance(mContext).getmAdapterForDisplayRecipes().deleteItem(position);
+        DataManager.getInstance(mContext).getAdapterForDisplayRecipes().deleteItem(position);
     }
 }
