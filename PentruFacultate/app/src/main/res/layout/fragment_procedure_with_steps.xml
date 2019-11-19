@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp"
+        android:layout_marginStart="12sp"
         android:text="Titlu procedura"
         android:textSize="30sp" />
     <androidx.recyclerview.widget.RecyclerView

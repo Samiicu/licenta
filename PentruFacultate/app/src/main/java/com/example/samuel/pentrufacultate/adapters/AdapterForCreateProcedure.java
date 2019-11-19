@@ -1,6 +1,9 @@
 package com.example.samuel.pentrufacultate.adapters;
 
 import android.content.Context;
+
+import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
+import com.example.samuel.pentrufacultate.models.StringHelper;
 import com.google.android.material.textfield.TextInputEditText;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
@@ -15,8 +18,8 @@ import com.example.samuel.pentrufacultate.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCreateProcedure.ViewHolder> {
-    private static final String TAG = "ADAPTERPRocedure";
+public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCreateProcedure.ViewHolder>  {
+    private static final String TAG = StringHelper.getTag(AddNewRecipe.class,AdapterForCreateProcedure.class);
     ArrayList<Boolean> flag = new ArrayList<>();
     private HashMap<String, String> dataInput;
     //    private List<String> mData;
@@ -108,4 +111,5 @@ public class AdapterForCreateProcedure extends RecyclerView.Adapter<AdapterForCr
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
+
 }

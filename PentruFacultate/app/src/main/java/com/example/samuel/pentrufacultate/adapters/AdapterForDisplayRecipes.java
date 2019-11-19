@@ -61,7 +61,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                     MainActivity.mCurrentFragment = oneProcedureDisplayFragment;
                     mMainActivity.mFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, oneProcedureDisplayFragment)
-                            .addToBackStack("one_recipe")
+                            .addToBackStack(StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT)
                             .commit();
                 }
             });

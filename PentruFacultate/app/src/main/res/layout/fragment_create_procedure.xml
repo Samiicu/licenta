@@ -60,16 +60,16 @@
         android:id="@+id/add_new_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Adauga un nou pas"
+        android:layout_gravity="left"
+        android:text="@string/adauga_un_nou_pas"
         android:textAllCaps="false" />
 
         <Button
             android:id="@+id/save_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Salvaeaza reteta"
+            android:layout_gravity="right"
+            android:text="@string/salvaeaza_reteta"
             android:textAllCaps="false" />
     </LinearLayout>
 

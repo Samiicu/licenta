@@ -1,6 +1,7 @@
 package com.example.samuel.pentrufacultate.fragments;
 
 import android.content.Intent;
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import androidx.appcompat.view.menu.MenuView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,13 +71,22 @@ public class AddNewRecipe extends Fragment {
 
         //////////////
         // set up the RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.input_steps_recycler_view);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        RecyclerView inputRecipesRecyclerView = view.findViewById(R.id.input_steps_recycler_view);
+//        RecyclerView.ItemDecoration itemDecoration= new RecyclerView.ItemDecoration;itemDecoration.onDraw();
+        inputRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+            @Override
+            public void onItemsAdded(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
+                super.onItemsAdded(recyclerView, positionStart, itemCount);
+                inputRecipesRecyclerView.scrollToPosition(positionStart);
+                inputRecipesRecyclerView.requestChildFocus(recyclerView.getChildAt(positionStart),recyclerView.getFocusedChild());
+            }
+        });
+        inputRecipesRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
         adapter = new AdapterForCreateProcedure(getContext(), inputData);
 //        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        inputRecipesRecyclerView.setAdapter(adapter);
+//        inputRecipesRecyclerView.getLayoutManager()
+
 
         ///////////
 
@@ -86,6 +97,8 @@ public class AddNewRecipe extends Fragment {
                 ++numberOfCurrentSteps;
                 inputData.put("Pasul " + numberOfCurrentSteps, "");
                 adapter.notifyItemInserted(numberOfCurrentSteps - 1);
+
+
             }
         });
 

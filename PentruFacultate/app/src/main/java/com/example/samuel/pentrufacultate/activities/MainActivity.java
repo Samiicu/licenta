@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,18 +43,21 @@ import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_R
 import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_READER_SUCCESS;
 import static com.example.samuel.pentrufacultate.models.StringHelper.USER_UID_EXTRA;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = StringHelper.getTag(MainActivity.class, null);
     private static final String ACTION_SHOW_RECIPES = "show_recipes";
 
 
-    private static final String TAG_DISPLAY_RECIPES = "display_recipes_fragment";
-    private static final String TAG_CREATE_NEW_RECIPE = "create_new_recipe_fragment";
+    private static final String TAG_DISPLAY_RECIPES_FRAGMENT = "display_recipes_fragment";
+    private static final String TAG_CREATE_NEW_RECIPE_FRAGMENT = "create_new_recipe_fragment";
+
 
     public static Fragment mCurrentFragment;
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
     private TextView mEmailDisplay, mUsernameDisplay;
+    Toolbar toolbar;
+    ImageButton mShoppingListButton;
     //    private static String uidCurrentUser;
     private FirebaseAuth auth;
     DatabaseReference mDatabase;
@@ -79,13 +84,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FirebaseAuth.getInstance().getCurrentUser().getUid();
             setContentView(R.layout.activity_main);
             mFragmentManager = getSupportFragmentManager();
+            mFragmentManager.addOnBackStackChangedListener(this);
             mDataManager = DataManager.getInstance(this);
             mDatabase = FirebaseDatabase.getInstance().getReference();
 //            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             updateProfileData(mFireBaseUser, getApplication());
 
-            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
+            mShoppingListButton = toolbar.findViewById(R.id.shopping_list);
             setSupportActionBar(toolbar);
 
 
@@ -99,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             if (savedInstanceState == null) {
-                setTitle("Proceduri");
+                setTitle("Toate retetele tale");
 //            Toolbar toolbarTitle = getTitle()findViewById(R.id.toolbar);
 //            toolbarTitle.setTitle("Proceduri");
                 displayAllRecipes();
@@ -212,20 +219,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayCreateNewRecipe() {
-        Toolbar toolbarTitle = findViewById(R.id.toolbar);
-        toolbarTitle.setTitle("O procedura noua");
+//        Toolbar toolbarTitle = findViewById(R.id.toolbar);
+//        toolbarTitle.setTitle("O procedura noua");
         Fragment addNewRecipe = new AddNewRecipe();
         Bundle bundleCreate = new Bundle();
         bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
         addNewRecipe.setArguments(bundleCreate);
-        mFragmentManager.beginTransaction().replace(R.id.fragment_container, addNewRecipe, TAG_CREATE_NEW_RECIPE).addToBackStack(null).commit();
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, addNewRecipe, TAG_CREATE_NEW_RECIPE_FRAGMENT).addToBackStack(TAG_CREATE_NEW_RECIPE_FRAGMENT).commit();
         mCurrentFragment = addNewRecipe;
     }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        Log.i(TAG, "onAttachFragment: ");
+        super.onAttachFragment(fragment);
+    }
+
     private void displayAllRecipes() {
-        Toolbar toolbarTitle = findViewById(R.id.toolbar);
-        toolbarTitle.setTitle("Retetele tale");
-        Fragment findFragment = mFragmentManager.findFragmentByTag(TAG_DISPLAY_RECIPES);
+//        Toolbar toolbarTitle = findViewById(R.id.toolbar);
+//        toolbarTitle.setTitle("Retetele tale");
+        Fragment findFragment = mFragmentManager.findFragmentByTag(TAG_DISPLAY_RECIPES_FRAGMENT);
         if (findFragment != null) {
             for (int i = 0; i < mFragmentManager.getBackStackEntryCount(); ++i) {
                 mFragmentManager.popBackStack();
@@ -241,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundleDisplay.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
             displayProceduresFragment.setArguments(bundleDisplay);
             mCurrentFragment = displayProceduresFragment;
-            mFragmentManager.beginTransaction().replace(R.id.fragment_container, displayProceduresFragment, TAG_DISPLAY_RECIPES).commit();
+            mFragmentManager.beginTransaction().replace(R.id.fragment_container, displayProceduresFragment, TAG_DISPLAY_RECIPES_FRAGMENT).commit();
         }
     }
 
@@ -269,8 +282,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i(TAG, "onResumeFragments: ");
         super.onResumeFragments();
     }
-    private boolean isLastFragment(){
+
+    private boolean isLastFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-       return fragmentManager.getBackStackEntryCount() == 0;
+        return fragmentManager.getBackStackEntryCount() == 0;
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Log.i(TAG, "onBackStackChanged: ");
+        int fragmentCount = mFragmentManager.getBackStackEntryCount();
+        if (fragmentCount != 0) {
+            String fragmentName = mFragmentManager.getBackStackEntryAt(fragmentCount - 1).getName();
+            if (fragmentName != null) {
+                switch (fragmentName) {
+                    case StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT:
+                        toolbar.setTitle("Pasii retetei");
+                        mShoppingListButton.setVisibility(View.VISIBLE);
+                        break;
+                    case TAG_CREATE_NEW_RECIPE_FRAGMENT:
+                        toolbar.setTitle("Creezi o reteta noua");
+                        mShoppingListButton.setVisibility(View.GONE);
+                        break;
+                }
+            } else {
+                toolbar.setTitle("Toate retetele tale");
+                mShoppingListButton.setVisibility(View.GONE);
+            }
+        } else {
+            toolbar.setTitle("Toate retetele tale");
+            mShoppingListButton.setVisibility(View.GONE);
+        }
     }
 }

@@ -9,7 +9,7 @@ public class StringHelper {
     public static final int RESULT_QR_READER_SUCCESS = 1;
     public static final int RESULT_QR_READER_FAILED = 0;
     public static final String RESULT_QR_READER = "result_qr_reader";
-
+    public static final String TAG_DISPLAY_ONE_RECIPE_FRAGMENT = "display_one_recipe_fragment";
 
     public static String getTag(Class parentClass, @Nullable Class childClass) {
         if (childClass == null) {
