@@ -1,7 +1,13 @@
 package com.example.samuel.pentrufacultate.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,12 +29,15 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
+import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
 import com.example.samuel.pentrufacultate.managers.DataManager;
+import com.example.samuel.pentrufacultate.managers.SyncInformationJobService;
 import com.example.samuel.pentrufacultate.models.QrLoader;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.StringHelper;
+import com.example.samuel.pentrufacultate.products.clients.AllProductsCallClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG_DISPLAY_RECIPES_FRAGMENT = "display_recipes_fragment";
     private static final String TAG_CREATE_NEW_RECIPE_FRAGMENT = "create_new_recipe_fragment";
+    private static final String TAG_ADD_SHOPPING_LIST_FRAGMENT = "add_shopping_list";
 
 
     public static Fragment mCurrentFragment;
@@ -80,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         auth = FirebaseAuth.getInstance();
         mFireBaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFireBaseUser != null) {
-            checkTheCredentials();
+            checkForUpdates();
             FirebaseAuth.getInstance().getCurrentUser().getUid();
             setContentView(R.layout.activity_main);
             mFragmentManager = getSupportFragmentManager();
@@ -93,6 +103,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             toolbar = findViewById(R.id.toolbar);
             mShoppingListButton = toolbar.findViewById(R.id.shopping_list);
+            mShoppingListButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    displayAddShoppingList();
+                }
+            });
             setSupportActionBar(toolbar);
 
 
@@ -229,6 +245,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mCurrentFragment = addNewRecipe;
     }
 
+    private void displayAddShoppingList() {
+        Fragment addShoppingListFragment = new AddShoppingList();
+        Bundle bundleCreate = new Bundle();
+        bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
+        addShoppingListFragment.setArguments(bundleCreate);
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, addShoppingListFragment, TAG_ADD_SHOPPING_LIST_FRAGMENT).addToBackStack(TAG_ADD_SHOPPING_LIST_FRAGMENT).commit();
+        mCurrentFragment = addShoppingListFragment;
+    }
+
     @Override
     public void onAttachFragment(Fragment fragment) {
         Log.i(TAG, "onAttachFragment: ");
@@ -258,11 +283,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void checkTheCredentials() {
-        if (auth.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+
+    private void checkForUpdates() {
+
+
+        SharedPreferences generalSharedPref = getSharedPreferences("General", MODE_PRIVATE);
+        Long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
+        Long currentTime = System.currentTimeMillis();
+        if (lastUpdate < currentTime) {
+//            new AsyncTask<Void, Void, Boolean>() {
+//                @Override
+//                protected void onPostExecute(Boolean aVoid) {
+//                    super.onPostExecute(aVoid);
+//                }
+//
+//                @Override
+//                protected Boolean doInBackground(Void... voids) {
+//                    AllProductsCallClient getProductsClient = new AllProductsCallClient();
+//                    getProductsClient.run();
+//                    return true;
+//                }
+//            }.execute();
+
+            //////////////////////////////////////////////////////////
+
+            ComponentName componentName = new ComponentName(this, SyncInformationJobService.class);
+            JobInfo jobInfo = new JobInfo.Builder(12, componentName)
+                    .setMinimumLatency(3 * 1000) // Wait at least 30s
+                    .setOverrideDeadline(6 * 1000) // Maximum delay 60s
+                    .build();
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode = jobScheduler.schedule(jobInfo);
+            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+                Log.d(TAG, "Job scheduled!");
+            } else {
+                Log.d(TAG, "Job not scheduled");
+            }
         }
+
+
     }
 
     @Override
@@ -302,6 +361,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case TAG_CREATE_NEW_RECIPE_FRAGMENT:
                         toolbar.setTitle("Creezi o reteta noua");
+                        mShoppingListButton.setVisibility(View.GONE);
+                        break;
+                    case TAG_ADD_SHOPPING_LIST_FRAGMENT:
+                        toolbar.setTitle("Lista de cumparaturi");
                         mShoppingListButton.setVisibility(View.GONE);
                         break;
                 }

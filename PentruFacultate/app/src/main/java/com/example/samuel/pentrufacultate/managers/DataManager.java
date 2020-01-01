@@ -1,9 +1,7 @@
 package com.example.samuel.pentrufacultate.managers;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayRecipes;
 import com.example.samuel.pentrufacultate.adapters.SwipeToDeleteCallback;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
+import com.example.samuel.pentrufacultate.products.storage.DatabaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,7 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
@@ -41,15 +39,19 @@ public class DataManager {
     private AdapterForDisplayRecipes mAdapterForDisplayRecipes;
     private HashMap<String, DatabaseReference> firebaseReferences;
     //    private DatabaseReference mDatabase;
+
+    private DatabaseHelper databaseHelper;
     private DatabaseReference mLoadRecipeDatabase;
     //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
     private ChildEventListener mChildEventListenerRecips;
+    private CharSequence selectedRecipeTitle;
 
     public static DataManager getInstance(Context context) {
         if (dataManagerInstance == null) {
             dataManagerInstance = new DataManager();
+            dataManagerInstance.databaseHelper = new DatabaseHelper(context);
             dataManagerInstance.firebaseReferences = new HashMap<>();
             dataManagerInstance.firebaseReferences.put(ROOT_DATA_BASE_REF, FirebaseDatabase.getInstance().getReference());
             dataManagerInstance.currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -188,5 +190,17 @@ public class DataManager {
         Log.i(TAG, "removeRecipeFromDatabase: ");
         this.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF)
                 .child(recipe.getTitle()).removeValue();
+    }
+
+    public void saveSelectedRecipeTitle(CharSequence selectedRecipeTitle) {
+        this.selectedRecipeTitle = selectedRecipeTitle;
+    }
+
+    public CharSequence getSelectedRecipeTitle() {
+        return selectedRecipeTitle;
+    }
+
+    public DatabaseHelper getLocalDB() {
+        return databaseHelper;
     }
 }

@@ -52,6 +52,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
+                    DataManager.getInstance(mMainActivity).saveSelectedRecipeTitle(titleProcedure.getText());
                     OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("ProcedureToDisplayJSON", DataManager.getInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
@@ -68,10 +69,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
 //            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
             titleProcedure = itemView.findViewById(R.id.procedure_display_title);
             numberStepsProcedure = itemView.findViewById(R.id.procedure_display_number_of_steps);
-
         }
-
-
     }
 
     // data is passed into the constructor
@@ -132,9 +130,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
             }
         };
         snackbar.addCallback(snackBarCallBack);
-
         snackbar.show();
-
     }
 
     private void undoDelete() {
