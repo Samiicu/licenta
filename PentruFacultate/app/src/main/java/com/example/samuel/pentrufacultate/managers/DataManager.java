@@ -10,9 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.samuel.pentrufacultate.adapters.AdapterForCreateShoppingList;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayRecipes;
 import com.example.samuel.pentrufacultate.adapters.SwipeToDeleteCallback;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
+import com.example.samuel.pentrufacultate.models.ShoppingItem;
+import com.example.samuel.pentrufacultate.models.ShoppingList;
 import com.example.samuel.pentrufacultate.products.storage.DatabaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,9 +24,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
@@ -31,12 +36,17 @@ import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 public class DataManager {
     private static final String ROOT_DATA_BASE_REF = "root_data_base";
     private static final String USER_RECIPES_DATA_BASE_REF = "recipes_data_base";
+    private static final String USER_SHOPPING_LISTS_DATA_BASE_REF = "shopping_lists_data_base";
     private static final String PATH_USERS_DATA = "users_data";
     private static final String PATH_RECIPES = "recipes";
+    private static final String PATH_SHOPPING_LIST = "shopping_lists";
     private static volatile DataManager dataManagerInstance;
 
     private ArrayList<RecipeModel> mRecipesData;
+    private ArrayList<ShoppingList> mShoppingListsData;
     private AdapterForDisplayRecipes mAdapterForDisplayRecipes;
+    private AdapterForCreateShoppingList mCurrentShoppingListAdapter;
+    private ShoppingList mCurrentShoppingList;
     private HashMap<String, DatabaseReference> firebaseReferences;
     //    private DatabaseReference mDatabase;
 
@@ -45,8 +55,8 @@ public class DataManager {
     //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
-    private ChildEventListener mChildEventListenerRecips;
-    private CharSequence selectedRecipeTitle;
+    private ChildEventListener mChildEventListenerRecips, mChildEventListenerShoppingList;
+    private String selectedRecipeTitle;
 
     public static DataManager getInstance(Context context) {
         if (dataManagerInstance == null) {
@@ -55,13 +65,13 @@ public class DataManager {
             dataManagerInstance.firebaseReferences = new HashMap<>();
             dataManagerInstance.firebaseReferences.put(ROOT_DATA_BASE_REF, FirebaseDatabase.getInstance().getReference());
             dataManagerInstance.currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            dataManagerInstance.firebaseReferences.put(USER_RECIPES_DATA_BASE_REF, dataManagerInstance.
-                    firebaseReferences.get(ROOT_DATA_BASE_REF).
-                    child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid()));
+            dataManagerInstance.firebaseReferences.put(USER_RECIPES_DATA_BASE_REF, dataManagerInstance.firebaseReferences.get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid()));
+            dataManagerInstance.firebaseReferences.put(USER_SHOPPING_LISTS_DATA_BASE_REF, dataManagerInstance.firebaseReferences.get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_SHOPPING_LIST).child(dataManagerInstance.getCurrentUserUid()));
 //            dataManagerInstance.mDatabase = FirebaseDatabase.getInstance().getReference();
 //            dataManagerInstance.mCurrentUserDatabaseProcedures = dataManagerInstance.mDatabase.
 //                    child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid());
             dataManagerInstance.mRecipesData = new ArrayList<>();
+            dataManagerInstance.mShoppingListsData = new ArrayList<>();
             dataManagerInstance.mAdapterForDisplayRecipes = new AdapterForDisplayRecipes(context, dataManagerInstance.mRecipesData);
 
         }
@@ -103,6 +113,72 @@ public class DataManager {
         return new RecipeModel("", "", new ArrayList<>());
     }
 
+
+    public void addListenerForShoppingListsData(Context context) {
+        // create and add the eventChildListener just once per DataManagerInstance
+        if (this.mChildEventListenerShoppingList == null) {
+            // create
+            mChildEventListenerShoppingList = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    ShoppingList receivedShoppingList = new ShoppingList().fromJson((String) dataSnapshot.getValue());
+                    dataManagerInstance.mShoppingListsData.add(receivedShoppingList);
+
+                    if (mCurrentShoppingList != null && receivedShoppingList.getTitle().equals(mCurrentShoppingList.getTitle())) {
+                        mCurrentShoppingList = receivedShoppingList;
+//                        if (mCurrentShoppingListAdapter != null) {
+//                            mCurrentShoppingListAdapter.notifyDataSetChanged();
+//                        } else {
+//                            setAdapterForShoppingListByTitle(context, receivedShoppingList.getTitle());
+//                        }
+                    }
+//                    dataManagerInstance.mAdapterForDisplayRecipes.notifyShoppingListItemInserted(dataManagerInstance.mRecipesData.indexOf(receivedProcedure));
+                    Log.i(TAG, "onChildAdded: " + dataSnapshot);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.i(TAG, "onChildChanged: " + dataSnapshot);
+                    final ShoppingList receivedShoppingList = new ShoppingList().fromJson((String) dataSnapshot.getValue());
+                    for (ShoppingList localShoppingList : dataManagerInstance.mShoppingListsData) {
+                        if (localShoppingList.getTitle().equals(receivedShoppingList.getTitle())) {
+                            int positionBeforeRemoving = dataManagerInstance.mShoppingListsData.indexOf(localShoppingList);
+                            dataManagerInstance.mShoppingListsData.remove(receivedShoppingList);
+                            dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(positionBeforeRemoving);
+                            dataManagerInstance.mShoppingListsData.add(receivedShoppingList);
+                            dataManagerInstance.mAdapterForDisplayRecipes.notifyItemInserted(dataManagerInstance.mShoppingListsData.indexOf(receivedShoppingList));
+                        }
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Log.i(TAG, "onChildRemoved: " + dataSnapshot);
+                    ShoppingList receivedShoppingList = new ShoppingList().fromJson((String) dataSnapshot.getValue());
+                    int removedIndex = getIndexOfRecipe(receivedShoppingList.getTitle());
+                    if (removedIndex != -1) {
+                        dataManagerInstance.mShoppingListsData.remove(removedIndex);
+//                        dataManagerInstance.mLayoutDisplayAllRecipes.removeViewAt(removedIndex);
+//                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(removedIndex);
+//                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRangeChanged(removedIndex, dataManagerInstance.mRecipesData.size());
+                    }
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.i(TAG, "onChildMoved: " + dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            // add
+            dataManagerInstance.firebaseReferences.get(USER_SHOPPING_LISTS_DATA_BASE_REF).addChildEventListener(mChildEventListenerShoppingList);
+        }
+
+    }
 
     public void addListenerForDbRecipes() {
         // create and add the eventChildListener just once per DataManagerInstance
@@ -166,11 +242,47 @@ public class DataManager {
         return dataManagerInstance.currentUser.getUid();
     }
 
+
     public AdapterForDisplayRecipes getAdapterForDisplayRecipes() {
         return dataManagerInstance.mAdapterForDisplayRecipes;
     }
 
-    public RecyclerView addLayoutForDisplayAllRecipes(RecyclerView recyclerViewListOfRecipes, Context context) {
+    public AdapterForCreateShoppingList getCurrentShoppingListAdapter() {
+        return mCurrentShoppingListAdapter;
+    }
+
+    public AdapterForCreateShoppingList setAdapterForShoppingListByTitle(Context context, String title) {
+        mCurrentShoppingList=new ShoppingList();
+        if (mCurrentShoppingListAdapter == null || mCurrentShoppingList.getTitle() == null || !mCurrentShoppingListAdapter.getShoppingListTitle().equals(title)) {
+            mCurrentShoppingListAdapter = new AdapterForCreateShoppingList(context, mCurrentShoppingList);
+        }
+
+        for (ShoppingList shoppingList : mShoppingListsData
+        ) {
+            if (shoppingList.getTitle().equals(title)) {
+                mCurrentShoppingList = shoppingList;
+                mCurrentShoppingListAdapter = new AdapterForCreateShoppingList(context, mCurrentShoppingList);
+            }
+
+        }
+        return mCurrentShoppingListAdapter;
+    }
+
+    public ShoppingList getCurrentShoppingList() {
+        return mCurrentShoppingList;
+    }
+
+    public void addItemToShoppingList(ShoppingItem item) {
+        mCurrentShoppingList.addItemToShoppingList(item);
+    }
+
+    public void removeItemToShoppingList(String itemName) {
+        mCurrentShoppingList.removeItemFromShoppingList(itemName);
+    }
+
+
+    public RecyclerView addLayoutForDisplayAllRecipes(RecyclerView
+                                                              recyclerViewListOfRecipes, Context context) {
 
         this.mLayoutDisplayAllRecipes = recyclerViewListOfRecipes;
         this.mLayoutDisplayAllRecipes.refreshDrawableState();
@@ -193,14 +305,22 @@ public class DataManager {
     }
 
     public void saveSelectedRecipeTitle(CharSequence selectedRecipeTitle) {
-        this.selectedRecipeTitle = selectedRecipeTitle;
+        this.selectedRecipeTitle = selectedRecipeTitle.toString();
     }
 
-    public CharSequence getSelectedRecipeTitle() {
+    public void saveShoppingList(ShoppingList shoppingList) {
+        this.firebaseReferences.get(USER_SHOPPING_LISTS_DATA_BASE_REF).child((this.selectedRecipeTitle).toString()).setValue(shoppingList.toJson());
+    }
+
+    public String getSelectedRecipeTitle() {
         return selectedRecipeTitle;
     }
 
     public DatabaseHelper getLocalDB() {
         return databaseHelper;
+    }
+
+    public void notifyShoppingListItemInserted(int position) {
+        mCurrentShoppingListAdapter.notifyItemInserted(position);
     }
 }

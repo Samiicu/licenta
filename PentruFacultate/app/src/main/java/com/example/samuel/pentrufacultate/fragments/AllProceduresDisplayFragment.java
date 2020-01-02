@@ -46,6 +46,7 @@ public class AllProceduresDisplayFragment extends Fragment {
         Log.i(TAG, "onCreate: ");
         mDataManager = DataManager.getInstance(getContext());
         mDataManager.addListenerForDbRecipes();
+        mDataManager.addListenerForShoppingListsData(getContext());
 
 
     }

@@ -33,20 +33,6 @@ public class SyncInformationJobService extends JobService {
     private void doWork(JobParameters jobParameters) {
         AllProductsCallClient getProductsClient = new AllProductsCallClient();
         getProductsClient.run(SyncInformationJobService.this);
-
-//        // 10 seconds of working (1000*10ms)
-//        for (int i = 0; i < 1000; i++) {
-//            // If the job has been cancelled, stop working; the job will be rescheduled.
-//            if (jobCancelled)
-//                return;
-//
-//            try { Thread.sleep(10); } catch (Exception e) { }
-//        }
-//
-//        Log.d(TAG, "Job finished!");
-//        isWorking = false;
-//        boolean needsReschedule = false;
-//        jobFinished(jobParameters, needsReschedule);
     }
 
     // Called if the job was cancelled before being finished

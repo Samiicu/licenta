@@ -1,45 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
+    android:layout_height="wrap_content">
 
-    android:orientation="horizontal">
-
-    <CheckedTextView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_margin="3dp"
+    <CheckBox
+        android:id="@+id/checkbox_shopping_list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:checked="true"
         android:labelFor="@+id/text_shopping_item" />
 
     <TextView
         android:id="@+id/text_shopping_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_toStartOf="@+id/list_of_measurements"
+        android:layout_toEndOf="@+id/checkbox_shopping_list_item"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="@dimen/list_text_size"
-        tools:text="Margarina Unirea 300 g" />
+        tools:text="Gradina Bunicii Zacusca Vinete Picant 300g" />
 
     <LinearLayout
+        android:id="@+id/list_of_measurements"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="7dp">
 
         <TextView
+            android:id="@+id/quantity_shopping_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="2dp"
+            android:text="@string/_12"
             android:textSize="@dimen/list_text_size"
             tools:text="12" />
 
+
         <TextView
+            android:id="@+id/measure_item_shopping_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="7dp"
             android:text="@string/buc"
             android:textSize="@dimen/list_text_size" />
+
+
     </LinearLayout>
 
-
-</GridLayout>
+</RelativeLayout>

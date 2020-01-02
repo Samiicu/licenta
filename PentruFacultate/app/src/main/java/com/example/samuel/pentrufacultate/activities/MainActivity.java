@@ -357,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (fragmentName) {
                     case StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT:
                         toolbar.setTitle("Pasii retetei");
+                        toolbar.setSubtitle("");
                         mShoppingListButton.setVisibility(View.VISIBLE);
                         break;
                     case TAG_CREATE_NEW_RECIPE_FRAGMENT:
@@ -364,16 +365,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mShoppingListButton.setVisibility(View.GONE);
                         break;
                     case TAG_ADD_SHOPPING_LIST_FRAGMENT:
-                        toolbar.setTitle("Lista de cumparaturi");
+                        toolbar.setTitle("Lista de cumparaturi pentru:");
+                        toolbar.setSubtitle("");
+                        toolbar.setSubtitle(mDataManager.getSelectedRecipeTitle());
                         mShoppingListButton.setVisibility(View.GONE);
                         break;
                 }
             } else {
                 toolbar.setTitle("Toate retetele tale");
+                toolbar.setSubtitle("");
                 mShoppingListButton.setVisibility(View.GONE);
             }
         } else {
             toolbar.setTitle("Toate retetele tale");
+            toolbar.setSubtitle("");
             mShoppingListButton.setVisibility(View.GONE);
         }
     }

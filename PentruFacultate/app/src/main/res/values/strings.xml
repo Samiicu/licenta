@@ -49,7 +49,7 @@
     <string name="configuration">Configuration</string>
     <string name="communicate">Communicate</string>
     <string name="account">Account</string>
-    <string name="send">Send</string>
+    <string name="send">Trimite lista de cumparaturi</string>
     <string name="log_out">Log out</string>
     <string name="Name">Name</string>
     <string name="titlu_procedura">Titlu procedurii</string>
@@ -59,6 +59,9 @@
     <string name="adauga_un_nou_pas">Adauga un nou pas</string>
     <string name="salvaeaza_reteta">Salvaeaza reteta</string>
     <string name="buc">buc</string>
+    <string name="_12">12</string>
+    <string name="verifica_disponibilitatea_produselor">Verifica disponibilitatea produselor!</string>
+    <string name="salveaza_lista">Salveaza lista</string>
 </resources>
 
 

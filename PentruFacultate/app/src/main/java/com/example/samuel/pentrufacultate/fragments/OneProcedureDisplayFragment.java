@@ -1,6 +1,7 @@
 package com.example.samuel.pentrufacultate.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -11,6 +12,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplaySteps;
+import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.EditDistanceCalculator;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
@@ -43,29 +47,29 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
     private TextToSpeech mTTS;
-    private String uidCurrentUser;
-    private User currentUser;
     private String voiceInput;
     private int mCurrentStepPosition = 0;
-    AdapterForDisplaySteps adapterForDisplaySteps;
-    RecipeModel mProcedure;
-    TextView procedureName;
-    ArrayList<String> mProcedureSteps = new ArrayList<>();
-    EditDistanceCalculator editDistanceCalculator = new EditDistanceCalculator();
-    AudioManager amanager;
+    private AdapterForDisplaySteps adapterForDisplaySteps;
+    private RecipeModel mProcedure;
+    private TextView procedureName;
+    private ArrayList<String> mProcedureSteps = new ArrayList<>();
+    private EditDistanceCalculator editDistanceCalculator = new EditDistanceCalculator();
+    private AudioManager aManager;
+    DataManager dataManager;
+    private Context mContext;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
+        mContext = getContext();
         mProcedure = RecipeModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
         mProcedureSteps = mProcedure.getSteps();
-        uidCurrentUser = bundle.getString("userUid");
-        adapterForDisplaySteps = new AdapterForDisplaySteps(getContext(), mProcedure.getSteps());
+        adapterForDisplaySteps = new AdapterForDisplaySteps(mContext, mProcedure.getSteps());
         // start speech recogniser
         resetSpeechRecognizer();
-        amanager = (AudioManager) getActivity().getSystemService(getContext().AUDIO_SERVICE);
-        mTTS = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+        aManager = (AudioManager) getActivity().getSystemService(mContext.AUDIO_SERVICE);
+        mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int status) {
@@ -84,12 +88,13 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                 }
             }
         });
-
+        dataManager = DataManager.getInstance(mContext);
+        dataManager.setAdapterForShoppingListByTitle(mContext, mProcedure.getTitle());
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
     }
 
     private void speak(String textForSpeech) {
-        amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+        aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
@@ -100,28 +105,28 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-        int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO);
+        int permissionCheck = ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
             return;
         }
 
-        amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
 
 
         setRecogniserIntent();
         mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                amanager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                 Log.e(TAG, "onStart: speaking");
             }
 
             @Override
             public void onDone(String utteranceId) {
-                amanager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                 //something here is worng
-                Handler mainHandler = new Handler(getContext().getMainLooper());
+                Handler mainHandler = new Handler(mContext.getMainLooper());
 
                 Runnable myRunnable = new Runnable() {
                     @Override
@@ -146,10 +151,10 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         procedureName = view.findViewById(R.id.procedure_name);
         procedureName.setText(mProcedure.getTitle());
         RecyclerView recyclerView = view.findViewById(R.id.display_all_steps);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         Log.d(TAG, "onViewCreated: " + recyclerView);
 //        adapter.setClickListener(this);
-        DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), VERTICAL);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(mContext, VERTICAL);
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplaySteps);
 
@@ -175,9 +180,9 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
         if (speech != null)
             speech.destroy();
-        speech = SpeechRecognizer.createSpeechRecognizer(getContext());
-        Log.i(TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(getContext()));
-        if (SpeechRecognizer.isRecognitionAvailable(getContext()))
+        speech = SpeechRecognizer.createSpeechRecognizer(mContext);
+        Log.i(TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(mContext));
+        if (SpeechRecognizer.isRecognitionAvailable(mContext))
             speech.setRecognitionListener(this);
         else {
             Log.i(TAG, "resetSpeechRecognizer: returned");
@@ -271,7 +276,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 //            text += result + "\n";
         String voiceCommand = editDistanceCalculator.prepareComandForED(matches.get(0));
         Log.i(TAG, "onResults: RESULT: " + matches.get(0));
-        voiceInput=matches.get(0);
+        voiceInput = matches.get(0);
         if (!voiceCommand.equals("") && voiceCommand != null) {
 
             final String mostProbableAction = editDistanceCalculator.getMostProbableAction(voiceCommand);
@@ -302,14 +307,14 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                 case "nextStep":
                     mCurrentStepPosition++;
 
-                        if (mCurrentStepPosition <=mProcedureSteps.size() && mCurrentStepPosition >= 0) {
-                            Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
+                    if (mCurrentStepPosition <= mProcedureSteps.size() && mCurrentStepPosition >= 0) {
+                        Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
 
-                            speak(mProcedureSteps.get(mCurrentStepPosition));
-                        } else {
-                            startListeningSpeech();
-                            Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
-                        }
+                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    } else {
+                        startListeningSpeech();
+                        Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
+                    }
                     break;
                 case "backStep":
                     mCurrentStepPosition--;
@@ -333,7 +338,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                     speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
                 case "goToStep":
-                   mCurrentStepPosition=Integer.valueOf(stripNonDigits(voiceInput))-1 ;
+                    mCurrentStepPosition = Integer.valueOf(stripNonDigits(voiceInput)) - 1;
                     if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
@@ -355,18 +360,20 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         Log.i(TAG, "onPartialResults");
 
     }
+
     public static String stripNonDigits(
-            final CharSequence input /* inspired by seh's comment */){
+            final CharSequence input /* inspired by seh's comment */) {
         final StringBuilder sb = new StringBuilder(
                 input.length() /* also inspired by seh's comment */);
-        for(int i = 0; i < input.length(); i++){
+        for (int i = 0; i < input.length(); i++) {
             final char c = input.charAt(i);
-            if(c > 47 && c < 58){
+            if (c > 47 && c < 58) {
                 sb.append(c);
             }
         }
         return sb.toString();
     }
+
     @Override
     public void onEvent(int eventType, Bundle params) {
         Log.i(TAG, "onEvent");

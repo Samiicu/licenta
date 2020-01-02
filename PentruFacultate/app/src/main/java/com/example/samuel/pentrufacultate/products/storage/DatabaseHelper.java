@@ -99,7 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "select * from " + TABLE_PRODUCTS + " where "+PRODUCT_NAME+" =?";
         Cursor c = db.rawQuery(query, new String[]{productName});
-        if (c != null) {
+        if (c != null&& c.getCount()!=0) {
             c.moveToFirst();
             catalogProduct.setId(c.getString(c.getColumnIndex(PRODUCT_UID)));
             c.close();

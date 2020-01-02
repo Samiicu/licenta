@@ -23,34 +23,51 @@
         <ImageButton
             android:id="@+id/btn_add_to_shopping_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginEnd="0dp"
-            android:src="@drawable/ic_arrow_downward_green_24dp"
-            android:textAllCaps="false" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_button_v1" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/input_steps_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/buttonsPanel"
         android:layout_below="@+id/input_layout"
         android:layout_marginStart="3dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="3dp"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="1dp"
         android:orientation="vertical"
         android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp" />
 
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/btn_add_to_shopping_list"-->
-    <!--        android:layout_width="50sp"-->
-    <!--        android:layout_height="50sp"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginEnd="35sp"-->
-    <!--        android:layout_marginBottom="35sp"-->
-    <!--        android:src="@drawable/ic_plus" />-->
+    <RelativeLayout
+        android:id="@+id/buttonsPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/save_shopping_list_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="3dp"
+            android:text="@string/salveaza_lista"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/check_the_shopping_list_btn"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="3dp"
+            android:text=" Setari avansate"
+            android:textAllCaps="false" />
+    </RelativeLayout>
 
 </RelativeLayout>
