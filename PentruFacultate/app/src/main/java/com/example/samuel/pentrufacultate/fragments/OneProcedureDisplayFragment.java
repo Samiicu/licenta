@@ -37,6 +37,7 @@ import com.example.samuel.pentrufacultate.models.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
@@ -76,7 +77,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
                 if (status == TextToSpeech.SUCCESS) {
 
-                    int result = mTTS.setLanguage(Locale.ENGLISH);
+                    int result = mTTS.setLanguage(new Locale("ro","RO"));
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("TTS", "Language not supported");
@@ -88,13 +89,15 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                 }
             }
         });
+
         dataManager = DataManager.getInstance(mContext);
         dataManager.setAdapterForShoppingListByTitle(mContext, mProcedure.getTitle());
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
     }
 
     private void speak(String textForSpeech) {
-        aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+        aManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0);
+
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");

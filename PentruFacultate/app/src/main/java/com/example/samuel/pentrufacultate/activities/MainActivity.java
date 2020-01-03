@@ -1,13 +1,11 @@
 package com.example.samuel.pentrufacultate.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,7 +35,6 @@ import com.example.samuel.pentrufacultate.managers.SyncInformationJobService;
 import com.example.samuel.pentrufacultate.models.QrLoader;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.StringHelper;
-import com.example.samuel.pentrufacultate.products.clients.AllProductsCallClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +43,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.samuel.pentrufacultate.models.StringHelper.REQUEST_CODE_QR_READER;
 import static com.example.samuel.pentrufacultate.models.StringHelper.RESULT_QR_READER;
@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Fragment mCurrentFragment;
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
+    MenuItem shoppingListSettings;
+    MenuItem sendShoppingListMenuButton;
     private TextView mEmailDisplay, mUsernameDisplay;
     Toolbar toolbar;
     ImageButton mShoppingListButton;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DatabaseReference mDatabase;
     DatabaseReference mLoadRecipeReference;
     DataManager mDataManager;
+    NavigationView navigationView;
 
     FirebaseUser mFireBaseUser;
 
@@ -113,7 +116,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             drawer = findViewById(R.id.drawer_layout);
-            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView = findViewById(R.id.nav_view);
+            shoppingListSettings = navigationView.getMenu().getItem(4);
+            sendShoppingListMenuButton = shoppingListSettings.getSubMenu().getItem(1);
+            sendShoppingListMenuButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                    smsIntent.setType("vnd.android-dir/mms-sms");
+                    smsIntent.putExtra("address", "");
+                    smsIntent.putExtra("sms_body", StringHelper.prepareShoppingListForSms(mDataManager.getSelectedRecipeTitle(), mDataManager.getCurrentShoppingList()));
+                    startActivity(smsIntent);
+                    return false;
+                }
+            });
+            shoppingListSettings.setVisible(false);
             navigationView.setNavigationItemSelectedListener(this);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                     R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -285,28 +302,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void checkForUpdates() {
-
-
         SharedPreferences generalSharedPref = getSharedPreferences("General", MODE_PRIVATE);
-        Long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
-        Long currentTime = System.currentTimeMillis();
-        if (lastUpdate < currentTime) {
-//            new AsyncTask<Void, Void, Boolean>() {
-//                @Override
-//                protected void onPostExecute(Boolean aVoid) {
-//                    super.onPostExecute(aVoid);
-//                }
-//
-//                @Override
-//                protected Boolean doInBackground(Void... voids) {
-//                    AllProductsCallClient getProductsClient = new AllProductsCallClient();
-//                    getProductsClient.run();
-//                    return true;
-//                }
-//            }.execute();
-
-            //////////////////////////////////////////////////////////
-
+        long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
+        long currentTime = System.currentTimeMillis();
+        if (lastUpdate + TimeUnit.HOURS.toMillis(24)     < currentTime) {
             ComponentName componentName = new ComponentName(this, SyncInformationJobService.class);
             JobInfo jobInfo = new JobInfo.Builder(12, componentName)
                     .setMinimumLatency(3 * 1000) // Wait at least 30s
@@ -319,9 +318,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 Log.d(TAG, "Job not scheduled");
             }
+            generalSharedPref.edit().putLong("last_update_of_products", currentTime).apply();
         }
-
-
     }
 
     @Override
@@ -357,26 +355,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (fragmentName) {
                     case StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT:
                         toolbar.setTitle("Pasii retetei");
+                        navigationView.getMenu().getItem(0).setChecked(false);
                         toolbar.setSubtitle("");
+                        shoppingListSettings.setVisible(false);
                         mShoppingListButton.setVisibility(View.VISIBLE);
                         break;
                     case TAG_CREATE_NEW_RECIPE_FRAGMENT:
+                        shoppingListSettings.setVisible(false);
+                        navigationView.getMenu().getItem(0).setChecked(false);
                         toolbar.setTitle("Creezi o reteta noua");
                         mShoppingListButton.setVisibility(View.GONE);
                         break;
                     case TAG_ADD_SHOPPING_LIST_FRAGMENT:
+                        shoppingListSettings.setVisible(true);
+                        navigationView.getMenu().getItem(0).setChecked(false);
                         toolbar.setTitle("Lista de cumparaturi pentru:");
-                        toolbar.setSubtitle("");
                         toolbar.setSubtitle(mDataManager.getSelectedRecipeTitle());
                         mShoppingListButton.setVisibility(View.GONE);
                         break;
                 }
             } else {
+                shoppingListSettings.setVisible(false);
+                navigationView.getMenu().getItem(0).setChecked(true);
                 toolbar.setTitle("Toate retetele tale");
                 toolbar.setSubtitle("");
                 mShoppingListButton.setVisibility(View.GONE);
             }
         } else {
+            shoppingListSettings.setVisible(false);
+            navigationView.getMenu().getItem(0).setChecked(true);
             toolbar.setTitle("Toate retetele tale");
             toolbar.setSubtitle("");
             mShoppingListButton.setVisibility(View.GONE);

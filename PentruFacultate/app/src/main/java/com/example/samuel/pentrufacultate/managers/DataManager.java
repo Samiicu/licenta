@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
@@ -42,8 +43,9 @@ public class DataManager {
     private static final String PATH_SHOPPING_LIST = "shopping_lists";
     private static volatile DataManager dataManagerInstance;
 
+    private CopyOnWriteArrayList<OnStatusChangeListener> statusChangeListeners;
     private ArrayList<RecipeModel> mRecipesData;
-    private ArrayList<ShoppingList> mShoppingListsData;
+    private CopyOnWriteArrayList<ShoppingList> mShoppingListsData;
     private AdapterForDisplayRecipes mAdapterForDisplayRecipes;
     private AdapterForCreateShoppingList mCurrentShoppingListAdapter;
     private ShoppingList mCurrentShoppingList;
@@ -51,12 +53,12 @@ public class DataManager {
     //    private DatabaseReference mDatabase;
 
     private DatabaseHelper databaseHelper;
-    private DatabaseReference mLoadRecipeDatabase;
     //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
     private ChildEventListener mChildEventListenerRecips, mChildEventListenerShoppingList;
     private String selectedRecipeTitle;
+
 
     public static DataManager getInstance(Context context) {
         if (dataManagerInstance == null) {
@@ -71,7 +73,8 @@ public class DataManager {
 //            dataManagerInstance.mCurrentUserDatabaseProcedures = dataManagerInstance.mDatabase.
 //                    child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid());
             dataManagerInstance.mRecipesData = new ArrayList<>();
-            dataManagerInstance.mShoppingListsData = new ArrayList<>();
+            dataManagerInstance.mShoppingListsData = new CopyOnWriteArrayList<>();
+            dataManagerInstance.statusChangeListeners = new CopyOnWriteArrayList<>();
             dataManagerInstance.mAdapterForDisplayRecipes = new AdapterForDisplayRecipes(context, dataManagerInstance.mRecipesData);
 
         }
@@ -252,7 +255,7 @@ public class DataManager {
     }
 
     public AdapterForCreateShoppingList setAdapterForShoppingListByTitle(Context context, String title) {
-        mCurrentShoppingList=new ShoppingList();
+        mCurrentShoppingList = new ShoppingList();
         if (mCurrentShoppingListAdapter == null || mCurrentShoppingList.getTitle() == null || !mCurrentShoppingListAdapter.getShoppingListTitle().equals(title)) {
             mCurrentShoppingListAdapter = new AdapterForCreateShoppingList(context, mCurrentShoppingList);
         }
@@ -300,7 +303,11 @@ public class DataManager {
 
     public void removeRecipeFromDatabase(RecipeModel recipe) {
         Log.i(TAG, "removeRecipeFromDatabase: ");
+        //remove the recipe with given title
         this.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF)
+                .child(recipe.getTitle()).removeValue();
+        //remove shopping list for given title
+        this.firebaseReferences.get(USER_SHOPPING_LISTS_DATA_BASE_REF)
                 .child(recipe.getTitle()).removeValue();
     }
 
@@ -308,8 +315,17 @@ public class DataManager {
         this.selectedRecipeTitle = selectedRecipeTitle.toString();
     }
 
-    public void saveShoppingList(ShoppingList shoppingList) {
+    public void saveShoppingList( ShoppingList shoppingList) {
         this.firebaseReferences.get(USER_SHOPPING_LISTS_DATA_BASE_REF).child((this.selectedRecipeTitle).toString()).setValue(shoppingList.toJson());
+        for (ShoppingList searchShoppingList : mShoppingListsData
+        ) {
+            if (searchShoppingList.getTitle().equals(shoppingList.getTitle())) {
+
+                mShoppingListsData.remove(searchShoppingList);
+                mShoppingListsData.add(shoppingList);
+
+            }
+        }
     }
 
     public String getSelectedRecipeTitle() {
@@ -322,5 +338,25 @@ public class DataManager {
 
     public void notifyShoppingListItemInserted(int position) {
         mCurrentShoppingListAdapter.notifyItemInserted(position);
+    }
+
+
+    public void registerForListeningStatusChange(OnStatusChangeListener listener) {
+        statusChangeListeners.add(listener);
+    }
+
+    public void unregisterForListeningStatusChange(OnStatusChangeListener listener) {
+        statusChangeListeners.remove(listener);
+    }
+
+    public void notifyStatusChange() {
+        for (OnStatusChangeListener listener : statusChangeListeners
+        ) {
+            listener.onStatusChange();
+        }
+    }
+
+    public interface OnStatusChangeListener {
+        public void onStatusChange();
     }
 }

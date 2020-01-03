@@ -50,7 +50,7 @@ public class EditDistanceCalculator {
         String[] startProcedure = {"start", "can you start procedure"};
         String[] nextStep = {"next", "next step", "forward", "next step please"};
         String[] backStep = {"back", "back step", "backward", "previous step"};
-        String[] repeatStep = {"repeat", "repeat step", "repeat the current step please", "repeate please"};
+        String[] repeatStep = {"repeat", "repeat step", "repeat the current step please", "repeat please"};
         String[] restartProcedure = {"restart procedure"};
         String[] gotToStep = {"go to step", "go at step"};
 

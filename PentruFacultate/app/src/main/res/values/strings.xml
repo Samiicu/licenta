@@ -47,7 +47,7 @@
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
     <string name="create_a_new_procedure">Create a new procedure</string>
     <string name="configuration">Configuration</string>
-    <string name="communicate">Communicate</string>
+    <string name="communicate">Lista de cumparaturi</string>
     <string name="account">Account</string>
     <string name="send">Trimite lista de cumparaturi</string>
     <string name="log_out">Log out</string>
@@ -62,6 +62,9 @@
     <string name="_12">12</string>
     <string name="verifica_disponibilitatea_produselor">Verifica disponibilitatea produselor!</string>
     <string name="salveaza_lista">Salveaza lista</string>
+    <string name="verifica_lista_de_cumparaturi">Verifica lista de cumparaturi</string>
+    <string name="setari_lista_de_cumparaturi">Setari lista de cumparaturi</string>
+    <string name="lista_salvata">Lista salvata</string>
 </resources>
 
 

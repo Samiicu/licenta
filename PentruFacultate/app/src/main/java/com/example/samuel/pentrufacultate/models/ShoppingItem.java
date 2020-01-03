@@ -55,4 +55,12 @@ public class ShoppingItem {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean equals(ShoppingItem anotherItem) {
+        if (anotherItem == null || anotherItem.isChecked() != this.isChecked() || !anotherItem.getMeasure().equals(this.getMeasure()) || !anotherItem.getQuantity().equals(this.getQuantity())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
