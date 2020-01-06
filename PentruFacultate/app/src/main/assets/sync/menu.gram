@@ -1,0 +1,13 @@
+#JSGF V1.0;
+
+grammar menu;
+
+public <item> = next please |
+		next step please |
+		next step |
+		previous step |
+		back step |
+		repeat please |
+		restart the recipe |
+		repeat the last step;
+
