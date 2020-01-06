@@ -36,6 +36,7 @@ import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.EditDistanceCalculator;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
+import com.example.samuel.pentrufacultate.models.VoiceCommander;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,12 +57,10 @@ import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 public class OneProcedureDisplayFragment extends Fragment implements RecognitionListener {
     private static final String TAG = "APP_LOG_display";
 
+    VoiceCommander voiceCommander = new VoiceCommander();
 
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "wakeup";
-    private static final String FORECAST_SEARCH = "forecast";
-    private static final String DIGITS_SEARCH = "digits";
-    private static final String PHONE_SEARCH = "phones";
     private static final String MENU_SEARCH = "menu";
 
     /* Keyword we are looking for to activate menu */
@@ -236,7 +235,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         if (text.contains(KEYPHRASE))
             switchSearch(MENU_SEARCH);
         else
-            Log.i(TAG, "onPartialResult: "+text);
+            Log.i(TAG, "onPartialResult: " + text);
 //            ((TextView) findViewById(R.id.result_text)).setText(text);
     }
 
@@ -245,11 +244,15 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
 //        ((TextView) findViewById(R.id.result_text)).setText("");
         if (hypothesis != null) {
+
             Log.i("TESTUS", "getBestScore: " + hypothesis.getBestScore());
             Log.i("TESTUS", "getProb: " + hypothesis.getProb());
             Log.i("TESTUS", "getHypstr: " + hypothesis.getHypstr());
-            String text = hypothesis.getHypstr();
-            makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+            String voiceCommand = hypothesis.getHypstr();
+            if (-1700 > hypothesis.getBestScore() && hypothesis.getBestScore() > -3500) {
+                parseVoiceCommand(voiceCommander.getActionForVoiceCommand(voiceCommand));
+                makeText(getContext(), voiceCommand, Toast.LENGTH_SHORT).show();
+            }
             switchSearch(MENU_SEARCH);
         }
     }
@@ -263,16 +266,17 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     public void onTimeout() {
 
     }
- void parseVoiceCommand(String voiceCommand) {
+
+    void parseVoiceCommand(String voiceAction) {
         try {
 
 
-            switch (voiceCommand) {
-                case "startProcedure":
+            switch (voiceAction) {
+                case "START_RECIPE":
                     Log.i(TAG, "startProcedure: " + mProcedureSteps.get(mCurrentStepPosition));
                     speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
-                case "nextStep":
+                case "NEXT_STEP":
                     mCurrentStepPosition++;
 
                     if (mCurrentStepPosition <= mProcedureSteps.size() && mCurrentStepPosition >= 0) {
@@ -284,7 +288,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                         Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
                     }
                     break;
-                case "backStep":
+                case "PREVIOUS_STEP":
                     mCurrentStepPosition--;
                     if (mCurrentStepPosition < mProcedureSteps.size() && mCurrentStepPosition >= 0) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
@@ -293,7 +297,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                         Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
                     }
                     break;
-                case "repeatStep":
+                case "REPEAT_STEP":
                     if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
@@ -322,8 +326,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
         }
     }
-
-
 
     public static String stripNonDigits(
             final CharSequence input /* inspired by seh's comment */) {
