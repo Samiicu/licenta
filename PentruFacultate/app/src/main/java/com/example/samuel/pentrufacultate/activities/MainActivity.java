@@ -29,6 +29,7 @@ import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
 import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
+import com.example.samuel.pentrufacultate.fragments.CheckShoppingList;
 import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.managers.SyncInformationJobService;
@@ -60,13 +61,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG_DISPLAY_RECIPES_FRAGMENT = "display_recipes_fragment";
     private static final String TAG_CREATE_NEW_RECIPE_FRAGMENT = "create_new_recipe_fragment";
     private static final String TAG_ADD_SHOPPING_LIST_FRAGMENT = "add_shopping_list";
+    private static final String TAG_CHECK_SHOPPING_LIST_FRAGMENT = "check_shopping_list";
 
 
     public static Fragment mCurrentFragment;
     public FragmentManager mFragmentManager;
     private DrawerLayout drawer;
     MenuItem shoppingListSettings;
-    MenuItem sendShoppingListMenuButton;
+    MenuItem sendShoppingListMenuButton, checkTheShoppingListMenuButton;
     private TextView mEmailDisplay, mUsernameDisplay;
     Toolbar toolbar;
     ImageButton mShoppingListButton;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
 
     FirebaseUser mFireBaseUser;
+
 
     @Override
     protected void onStop() {
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView = findViewById(R.id.nav_view);
             shoppingListSettings = navigationView.getMenu().getItem(4);
             sendShoppingListMenuButton = shoppingListSettings.getSubMenu().getItem(1);
+            checkTheShoppingListMenuButton = shoppingListSettings.getSubMenu().getItem(0);
             sendShoppingListMenuButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
@@ -127,6 +131,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     smsIntent.putExtra("address", "");
                     smsIntent.putExtra("sms_body", StringHelper.prepareShoppingListForSms(mDataManager.getSelectedRecipeTitle(), mDataManager.getCurrentShoppingList()));
                     startActivity(smsIntent);
+                    return false;
+                }
+            });
+
+            checkTheShoppingListMenuButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    displayCheckTheShoppingListFragment();
                     return false;
                 }
             });
@@ -152,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -271,6 +284,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mCurrentFragment = addShoppingListFragment;
     }
 
+    private void displayCheckTheShoppingListFragment() {
+        Fragment checkShoppingListFragment = new CheckShoppingList();
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, checkShoppingListFragment, TAG_CHECK_SHOPPING_LIST_FRAGMENT).addToBackStack(TAG_CHECK_SHOPPING_LIST_FRAGMENT).commit();
+        mCurrentFragment = checkShoppingListFragment;
+    }
+
     @Override
     public void onAttachFragment(Fragment fragment) {
         Log.i(TAG, "onAttachFragment: ");
@@ -305,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences generalSharedPref = getSharedPreferences("General", MODE_PRIVATE);
         long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
         long currentTime = System.currentTimeMillis();
-        if (lastUpdate + TimeUnit.HOURS.toMillis(24)     < currentTime) {
+        if (lastUpdate + TimeUnit.HOURS.toMillis(24) < currentTime) {
             ComponentName componentName = new ComponentName(this, SyncInformationJobService.class);
             JobInfo jobInfo = new JobInfo.Builder(12, componentName)
                     .setMinimumLatency(3 * 1000) // Wait at least 30s

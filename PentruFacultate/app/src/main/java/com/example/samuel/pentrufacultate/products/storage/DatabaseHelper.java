@@ -104,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             catalogProduct.setId(c.getString(c.getColumnIndex(PRODUCT_UID)));
             c.close();
         } else {
-            catalogProduct.setId("0");
+            catalogProduct.setId("-1");
         }
         return catalogProduct;
     }
