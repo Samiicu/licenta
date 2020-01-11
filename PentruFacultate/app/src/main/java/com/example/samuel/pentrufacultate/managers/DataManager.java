@@ -94,7 +94,6 @@ public class DataManager {
                 if (dataManagerInstance == null) dataManagerInstance = new DataManager();
             }
         }
-
     }
 
     public static int getIndexOfRecipe(String receivedProcedureTitle) {
@@ -284,8 +283,7 @@ public class DataManager {
     }
 
 
-    public RecyclerView addLayoutForDisplayAllRecipes(RecyclerView
-                                                              recyclerViewListOfRecipes, Context context) {
+    public RecyclerView addLayoutForDisplayAllRecipes(RecyclerView recyclerViewListOfRecipes, Context context) {
 
         this.mLayoutDisplayAllRecipes = recyclerViewListOfRecipes;
         this.mLayoutDisplayAllRecipes.refreshDrawableState();
@@ -315,7 +313,7 @@ public class DataManager {
         this.selectedRecipeTitle = selectedRecipeTitle.toString();
     }
 
-    public void saveShoppingList( ShoppingList shoppingList) {
+    public void saveShoppingList(ShoppingList shoppingList) {
         this.firebaseReferences.get(USER_SHOPPING_LISTS_DATA_BASE_REF).child((this.selectedRecipeTitle).toString()).setValue(shoppingList.toJson());
         for (ShoppingList searchShoppingList : mShoppingListsData
         ) {

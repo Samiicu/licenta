@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.samuel.pentrufacultate.activities.MainActivity;
+import com.example.samuel.pentrufacultate.products.clients.GetStoresForProductsCallClient;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.appcompat.view.menu.MenuView;
@@ -35,7 +36,7 @@ import static com.example.samuel.pentrufacultate.models.StringHelper.*;
 public class AddNewRecipe extends Fragment {
 
 
-    private static final String ACTION_SHOW_RECIPES ="show_recipes" ;
+    private static final String ACTION_SHOW_RECIPES = "show_recipes";
     TextInputEditText nameText, procedureStepText;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -65,6 +66,15 @@ public class AddNewRecipe extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        ///testing
+
+        GetStoresForProductsCallClient getStoresClient = new GetStoresForProductsCallClient();
+        getStoresClient.run(getContext());
+
+        ///
+
+
         addNewInputButton = view.findViewById(R.id.add_new_input);
         saveProcedure = view.findViewById(R.id.save_recipe);
         nameText = view.findViewById(R.id.name_edit_text);
@@ -73,7 +83,7 @@ public class AddNewRecipe extends Fragment {
         // set up the RecyclerView
         RecyclerView inputRecipesRecyclerView = view.findViewById(R.id.input_steps_recycler_view);
 //        RecyclerView.ItemDecoration itemDecoration= new RecyclerView.ItemDecoration;itemDecoration.onDraw();
-        inputRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+        inputRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public void onItemsChanged(@NonNull RecyclerView recyclerView) {
                 Log.e(TAG, "onItemsChanged: ");
@@ -84,7 +94,7 @@ public class AddNewRecipe extends Fragment {
             public void onItemsAdded(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
                 super.onItemsAdded(recyclerView, positionStart, itemCount);
                 inputRecipesRecyclerView.scrollToPosition(positionStart);
-                inputRecipesRecyclerView.requestChildFocus(recyclerView.getChildAt(positionStart),recyclerView.getFocusedChild());
+                inputRecipesRecyclerView.requestChildFocus(recyclerView.getChildAt(positionStart), recyclerView.getFocusedChild());
             }
         });
         inputRecipesRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);

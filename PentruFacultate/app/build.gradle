@@ -49,6 +49,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-simplexml:2.1.0"
     apply plugin: 'com.google.gms.google-services'
     implementation project(':pocketsphinx-android-5prealpha-release')
+    implementation 'org.apache.commons:commons-lang3:3.6'
+
 
 }
 ant.importBuild 'assets.xml'
