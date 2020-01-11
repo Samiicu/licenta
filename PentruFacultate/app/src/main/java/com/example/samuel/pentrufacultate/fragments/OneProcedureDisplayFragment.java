@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -64,7 +65,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     private static final String MENU_SEARCH = "menu";
 
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "ok chef";
+    private static final String KEYPHRASE = "ok robo";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -121,12 +122,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     }
 
     private void speak(String textForSpeech) {
-        aManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0);
-
-
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
-        mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, map);
+        mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, null, "UniqueID");
     }
 
     @Override
@@ -139,19 +135,19 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
             return;
         }
 
-        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+//        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
 
 
         mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                 Log.e(TAG, "onStart: speaking");
             }
 
             @Override
             public void onDone(String utteranceId) {
-                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                 //something here is worng
                 Handler mainHandler = new Handler(mContext.getMainLooper());
 
@@ -249,11 +245,13 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
             Log.i("TESTUS", "getProb: " + hypothesis.getProb());
             Log.i("TESTUS", "getHypstr: " + hypothesis.getHypstr());
             String voiceCommand = hypothesis.getHypstr();
-            if (-1700 > hypothesis.getBestScore() && hypothesis.getBestScore() > -3500) {
+            if (-1700 > hypothesis.getBestScore() && hypothesis.getBestScore() > -3700) {
                 parseVoiceCommand(voiceCommander.getActionForVoiceCommand(voiceCommand));
                 makeText(getContext(), voiceCommand, Toast.LENGTH_SHORT).show();
             }
-            switchSearch(MENU_SEARCH);
+            if (hypothesis.getBestScore() != 0) {
+                switchSearch(KWS_SEARCH);
+            }
         }
     }
 
@@ -274,6 +272,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
             switch (voiceAction) {
                 case "START_RECIPE":
                     Log.i(TAG, "startProcedure: " + mProcedureSteps.get(mCurrentStepPosition));
+                    mCurrentStepPosition = 0;
                     speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
                 case "NEXT_STEP":
@@ -284,7 +283,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
-                        startListeningSpeech();
+                        mCurrentStepPosition--;
                         Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
                     }
                     break;
@@ -293,7 +292,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                     if (mCurrentStepPosition < mProcedureSteps.size() && mCurrentStepPosition >= 0) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
-                        startListeningSpeech();
+                        mCurrentStepPosition++;
                         Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
                     }
                     break;
@@ -440,8 +439,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         if (searchName.equals(KWS_SEARCH))
             recognizer.startListening(searchName);
         else
-            recognizer.startListening(searchName, 10000
-            );
+            recognizer.startListening(searchName, 3000);
 
 //        String caption = getResources().getString(captions.get(searchName));
 //        ((TextView) findViewById(R.id.caption_text)).setText(caption);
