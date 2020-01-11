@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.samuel.pentrufacultate"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.1"
@@ -48,4 +48,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.1.0"
     implementation "com.squareup.retrofit2:converter-simplexml:2.1.0"
     apply plugin: 'com.google.gms.google-services'
+    implementation project(':pocketsphinx-android-5prealpha-release')
+
 }
+ant.importBuild 'assets.xml'
+preBuild.dependsOn(list, checksum)
+clean.dependsOn(clean_assets)

@@ -75,6 +75,12 @@ public class AddNewRecipe extends Fragment {
 //        RecyclerView.ItemDecoration itemDecoration= new RecyclerView.ItemDecoration;itemDecoration.onDraw();
         inputRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
             @Override
+            public void onItemsChanged(@NonNull RecyclerView recyclerView) {
+                Log.e(TAG, "onItemsChanged: ");
+                super.onItemsChanged(recyclerView);
+            }
+
+            @Override
             public void onItemsAdded(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
                 super.onItemsAdded(recyclerView, positionStart, itemCount);
                 inputRecipesRecyclerView.scrollToPosition(positionStart);

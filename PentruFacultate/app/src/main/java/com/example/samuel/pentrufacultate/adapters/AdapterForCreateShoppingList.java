@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
+import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.ShoppingItem;
 import com.example.samuel.pentrufacultate.models.ShoppingList;
 import com.example.samuel.pentrufacultate.models.StringHelper;
@@ -77,7 +79,12 @@ public class AdapterForCreateShoppingList extends RecyclerView.Adapter<AdapterFo
             checkBoxShoppingItemItem = itemView.findViewById(R.id.checkbox_shopping_list_item);
             measureShoppingItem = itemView.findViewById(R.id.measure_item_shopping_list);
             quantityShoppingItem = itemView.findViewById(R.id.quantity_shopping_list_item);
-
+            checkBoxShoppingItemItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    DataManager.getInstance(null).notifyStatusChange();
+                }
+            });
 
 //            textInputLayout = itemView.findViewById(R.id.procedure_text_input_item);
         }

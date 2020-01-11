@@ -23,7 +23,7 @@
         <ImageButton
             android:id="@+id/btn_add_to_shopping_list"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginEnd="0dp"
             android:scaleType="fitCenter"
@@ -34,8 +34,9 @@
         android:id="@+id/input_steps_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonsPanel"
+
         android:layout_below="@+id/input_layout"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="3dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="3dp"
@@ -44,30 +45,22 @@
         android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp" />
 
-    <RelativeLayout
-        android:id="@+id/buttonsPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/buttonsPanel"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true">-->
 
-        <Button
-            android:id="@+id/save_shopping_list_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="3dp"
-            android:text="@string/salveaza_lista"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/check_the_shopping_list_btn"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="3dp"
-            android:text=" Setari avansate"
-            android:textAllCaps="false" />
-    </RelativeLayout>
+<!--&lt;!&ndash;        <Button&ndash;&gt;-->
+<!--&lt;!&ndash;            android:enabled="false"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:background="#008577"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/save_shopping_list_btn"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="45dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_alignParentStart="true"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textColor="@color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="@string/lista_salvata"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textAllCaps="false" />&ndash;&gt;-->
+<!--    </RelativeLayout>-->
 
 </RelativeLayout>

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.RecognitionListener;
+
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
@@ -27,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplaySteps;
@@ -34,17 +37,40 @@ import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.EditDistanceCalculator;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.User;
+import com.example.samuel.pentrufacultate.models.VoiceCommander;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
+import edu.cmu.pocketsphinx.Assets;
+import edu.cmu.pocketsphinx.Hypothesis;
+import edu.cmu.pocketsphinx.RecognitionListener;
+import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+
+import static android.widget.Toast.makeText;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
+import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
 public class OneProcedureDisplayFragment extends Fragment implements RecognitionListener {
     private static final String TAG = "APP_LOG_display";
+
+    VoiceCommander voiceCommander = new VoiceCommander();
+
+    /* Named searches allow to quickly reconfigure the decoder */
+    private static final String KWS_SEARCH = "wakeup";
+    private static final String MENU_SEARCH = "menu";
+
+    /* Keyword we are looking for to activate menu */
+    private static final String KEYPHRASE = "ok robo";
+
+    /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private SpeechRecognizer speech = null;
+    private edu.cmu.pocketsphinx.SpeechRecognizer recognizer = null;
     private Intent recognizerIntent;
     private TextToSpeech mTTS;
     private String voiceInput;
@@ -67,7 +93,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         mProcedureSteps = mProcedure.getSteps();
         adapterForDisplaySteps = new AdapterForDisplaySteps(mContext, mProcedure.getSteps());
         // start speech recogniser
-        resetSpeechRecognizer();
+//        resetSpeechRecognizer();
         aManager = (AudioManager) getActivity().getSystemService(mContext.AUDIO_SERVICE);
         mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
 
@@ -76,7 +102,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
                 if (status == TextToSpeech.SUCCESS) {
 
-                    int result = mTTS.setLanguage(Locale.ENGLISH);
+                    int result = mTTS.setLanguage(new Locale("ro", "RO"));
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("TTS", "Language not supported");
@@ -88,17 +114,15 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                 }
             }
         });
+
         dataManager = DataManager.getInstance(mContext);
         dataManager.setAdapterForShoppingListByTitle(mContext, mProcedure.getTitle());
+//        runRecognizerSetup();
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
     }
 
     private void speak(String textForSpeech) {
-        aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
-        mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, map);
+        mTTS.speak(textForSpeech, TextToSpeech.QUEUE_FLUSH, null, "UniqueID");
     }
 
     @Override
@@ -111,20 +135,19 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
             return;
         }
 
-        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+//        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
 
 
-        setRecogniserIntent();
         mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                 Log.e(TAG, "onStart: speaking");
             }
 
             @Override
             public void onDone(String utteranceId) {
-                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                 //something here is worng
                 Handler mainHandler = new Handler(mContext.getMainLooper());
 
@@ -147,7 +170,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
             }
         });
-        speech.startListening(recognizerIntent);
+//        speech.startListening(recognizerIntent);
         procedureName = view.findViewById(R.id.procedure_name);
         procedureName.setText(mProcedure.getTitle());
         RecyclerView recyclerView = view.findViewById(R.id.display_all_steps);
@@ -162,7 +185,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     }
 
     public void startListeningSpeech() {
-        speech.startListening(recognizerIntent);
+//        speech.startListening(recognizerIntent);
     }
 
 
@@ -176,25 +199,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
     }
 
-    private void resetSpeechRecognizer() {
-
-        if (speech != null)
-            speech.destroy();
-        speech = SpeechRecognizer.createSpeechRecognizer(mContext);
-        Log.i(TAG, "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(mContext));
-        if (SpeechRecognizer.isRecognitionAvailable(mContext))
-            speech.setRecognitionListener(this);
-        else {
-            Log.i(TAG, "resetSpeechRecognizer: returned");
-            return;
-        }
-    }
-
-
-    @Override
-    public void onReadyForSpeech(Bundle params) {
-        Log.i(TAG, "onReadyForSpeech");
-    }
 
     @Override
     public void onBeginningOfSpeech() {
@@ -202,109 +206,76 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     }
 
     @Override
-    public void onRmsChanged(float rmsdB) {
-
-    }
-
-    @Override
-    public void onBufferReceived(byte[] buffer) {
-        Log.i(TAG, "onBufferReceived: " + buffer);
-    }
-
-    @Override
     public void onEndOfSpeech() {
-        Log.i(TAG, "onEndOfSpeech");
-        speech.stopListening();
+//        Log.i(TAG, "onEndOfSpeech");
+//        speech.stopListening();
+
+        Log.i("TAG", "onEndOfSpeech: " + recognizer.getSearchName());
+
+
+        if (!recognizer.getSearchName().equals(KWS_SEARCH))
+            switchSearch(KWS_SEARCH);
+    }
+
+    /**
+     * In partial result we get quick updates about current hypothesis. In
+     * keyword spotting mode we can react here, in other modes we need to wait
+     * for final result in onResult.
+     */
+    @Override
+    public void onPartialResult(Hypothesis hypothesis) {
+        if (hypothesis == null)
+            return;
+
+        String text = hypothesis.getHypstr();
+        if (text.contains(KEYPHRASE))
+            switchSearch(MENU_SEARCH);
+        else
+            Log.i(TAG, "onPartialResult: " + text);
+//            ((TextView) findViewById(R.id.result_text)).setText(text);
     }
 
     @Override
-    public void onError(int error) {
-        String errorMessage = getErrorText(error);
-        Log.i(TAG, "FAILED " + errorMessage);
+    public void onResult(Hypothesis hypothesis) {
 
+//        ((TextView) findViewById(R.id.result_text)).setText("");
+        if (hypothesis != null) {
 
-        // rest voice recogniser
-        resetSpeechRecognizer();
-        speech.startListening(recognizerIntent);
-    }
-
-
-    public String getErrorText(int errorCode) {
-        String message;
-        switch (errorCode) {
-            case SpeechRecognizer.ERROR_AUDIO:
-                message = "Audio recording error";
-                break;
-            case SpeechRecognizer.ERROR_CLIENT:
-                message = "Client side error";
-                break;
-            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                message = "Insufficient permissions";
-                break;
-            case SpeechRecognizer.ERROR_NETWORK:
-                message = "Network error";
-                break;
-            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                message = "Network timeout";
-                break;
-            case SpeechRecognizer.ERROR_NO_MATCH:
-                message = "No match";
-                break;
-            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                message = "RecognitionService busy";
-                break;
-            case SpeechRecognizer.ERROR_SERVER:
-                message = "error from server";
-                break;
-            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                message = "No speech input";
-                break;
-            default:
-                message = "Didn't understand, please try again.";
-                break;
-        }
-        return message;
-    }
-
-    @Override
-    public void onResults(Bundle results) {
-        Log.i(TAG, "onResults");
-        ArrayList<String> matches = results
-                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-//        String text = "";
-//        for (String result : matches)
-//            text += result + "\n";
-        String voiceCommand = editDistanceCalculator.prepareComandForED(matches.get(0));
-        Log.i(TAG, "onResults: RESULT: " + matches.get(0));
-        voiceInput = matches.get(0);
-        if (!voiceCommand.equals("") && voiceCommand != null) {
-
-            final String mostProbableAction = editDistanceCalculator.getMostProbableAction(voiceCommand);
-            if (mostProbableAction != null) {
-                parseVoiceCommand(mostProbableAction);
-                Log.e(TAG, "onResults: afterParseCommand");
-//                parseVoiceCommand(mostProbableAction);
-            } else {
-                speech.startListening(recognizerIntent);
+            Log.i("TESTUS", "getBestScore: " + hypothesis.getBestScore());
+            Log.i("TESTUS", "getProb: " + hypothesis.getProb());
+            Log.i("TESTUS", "getHypstr: " + hypothesis.getHypstr());
+            String voiceCommand = hypothesis.getHypstr();
+            if (-1700 > hypothesis.getBestScore() && hypothesis.getBestScore() > -3700) {
+                parseVoiceCommand(voiceCommander.getActionForVoiceCommand(voiceCommand));
+                makeText(getContext(), voiceCommand, Toast.LENGTH_SHORT).show();
             }
-            Log.i(TAG, "onResults: " + editDistanceCalculator.getMostProbableAction(voiceCommand));
-        } else {
-            Log.i(TAG, "onResults: FAIL");
+            if (hypothesis.getBestScore() != 0) {
+                switchSearch(KWS_SEARCH);
+            }
         }
+    }
+
+    @Override
+    public void onError(Exception e) {
 
     }
 
+    @Override
+    public void onTimeout() {
 
-    private void parseVoiceCommand(String voiceCommand) {
+    }
+
+    void parseVoiceCommand(String voiceAction) {
         try {
 
 
-            switch (voiceCommand) {
-                case "startProcedure":
+            switch (voiceAction) {
+                case "START_RECIPE":
                     Log.i(TAG, "startProcedure: " + mProcedureSteps.get(mCurrentStepPosition));
+                    mCurrentStepPosition = 0;
                     speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
-                case "nextStep":
+                case "NEXT_STEP":
                     mCurrentStepPosition++;
 
                     if (mCurrentStepPosition <= mProcedureSteps.size() && mCurrentStepPosition >= 0) {
@@ -312,20 +283,20 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
-                        startListeningSpeech();
+                        mCurrentStepPosition--;
                         Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
                     }
                     break;
-                case "backStep":
+                case "PREVIOUS_STEP":
                     mCurrentStepPosition--;
                     if (mCurrentStepPosition < mProcedureSteps.size() && mCurrentStepPosition >= 0) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
-                        startListeningSpeech();
+                        mCurrentStepPosition++;
                         Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
                     }
                     break;
-                case "repeatStep":
+                case "REPEAT_STEP":
                     if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
                         speak(mProcedureSteps.get(mCurrentStepPosition));
                     } else {
@@ -347,18 +318,12 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                     }
                     break;
                 default:
-                    speech.startListening(recognizerIntent);
+//                    speech.startListening(recognizerIntent);
                     break;
             }
         } catch (Exception ignored) {
 
         }
-    }
-
-    @Override
-    public void onPartialResults(Bundle partialResults) {
-        Log.i(TAG, "onPartialResults");
-
     }
 
     public static String stripNonDigits(
@@ -375,23 +340,21 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     }
 
     @Override
-    public void onEvent(int eventType, Bundle params) {
-        Log.i(TAG, "onEvent");
-    }
-
-    @Override
     public void onResume() {
         Log.i(TAG, "resume");
         super.onResume();
-        resetSpeechRecognizer();
-        speech.startListening(recognizerIntent);
+        runRecognizerSetup();
+//        resetSpeechRecognizer();
+//        speech.startListening(recognizerIntent);
     }
 
     @Override
     public void onPause() {
         Log.i(TAG, "pause");
         super.onPause();
-        speech.stopListening();
+        recognizer.removeListener(this);
+        recognizer.stop();
+//        speech.stopListening();
     }
 
     @Override
@@ -407,9 +370,79 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     public void onStop() {
         Log.i(TAG, "stop");
         super.onStop();
-        if (speech != null) {
-            speech.destroy();
-        }
+//        if (speech != null) {
+//            speech.destroy();
+//        }
+    }
+
+
+    private void runRecognizerSetup() {
+        // Recognizer initialization is a time-consuming and it involves IO,
+        // so we execute it in async task
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                try {
+                    Assets assets = new Assets(getContext());
+                    File assetDir = assets.syncAssets();
+                    setupRecognizer(assetDir);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result != null) {
+
+                    Log.i(TAG, "onPostExecute: ailed to init recognizer " + result);
+//                    ((TextView) getContext().findViewById(R.id.caption_text))
+//                            .setText("Failed to init recognizer " + result);
+                } else {
+                    switchSearch(KWS_SEARCH);
+                }
+            }
+        }.execute();
+    }
+
+    private void setupRecognizer(File assetsDir) throws IOException {
+        // The recognizer can be configured to perform multiple searches
+        // of different kind and switch between them
+
+        recognizer = SpeechRecognizerSetup.defaultSetup()
+                .setAcousticModel(new File(assetsDir, "en-us-ptm"))
+                .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
+
+                .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
+
+                .getRecognizer();
+        recognizer.addListener(this);
+
+        /** In your application you might not need to add all those searches.
+         * They are added here for demonstration. You can leave just one.
+         */
+
+        // Create keyword-activation search.
+        recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+
+        // Create grammar-based search for selection between demos
+        File menuGrammar = new File(assetsDir, "menu.gram");
+        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
+        ;
+    }
+
+    private void switchSearch(String searchName) {
+        recognizer.stop();
+
+        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
+        if (searchName.equals(KWS_SEARCH))
+            recognizer.startListening(searchName);
+        else
+            recognizer.startListening(searchName, 3000);
+
+//        String caption = getResources().getString(captions.get(searchName));
+//        ((TextView) findViewById(R.id.caption_text)).setText(caption);
     }
 }
 
