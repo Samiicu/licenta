@@ -30,7 +30,7 @@ import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
 import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
 import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
 import com.example.samuel.pentrufacultate.fragments.CheckShoppingList;
-import com.example.samuel.pentrufacultate.fragments.ConfigurationFragment;
+
 import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.managers.SyncInformationJobService;
 import com.example.samuel.pentrufacultate.models.QrLoader;
@@ -45,7 +45,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.samuel.pentrufacultate.models.StringHelper.REQUEST_CODE_QR_READER;
@@ -103,9 +102,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFragmentManager.addOnBackStackChangedListener(this);
             mDataManager = DataManager.getInstance(this);
             mDatabase = FirebaseDatabase.getInstance().getReference();
-//            uidCurrentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            updateProfileData(mFireBaseUser, getApplication());
+            updateProfileData(mFireBaseUser);
 
             toolbar = findViewById(R.id.toolbar);
             mShoppingListButton = toolbar.findViewById(R.id.shopping_list);
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             drawer = findViewById(R.id.drawer_layout);
             navigationView = findViewById(R.id.nav_view);
-            shoppingListSettings = navigationView.getMenu().getItem(4);
+            shoppingListSettings = navigationView.getMenu().getItem(3);
             sendShoppingListMenuButton = shoppingListSettings.getSubMenu().getItem(1);
             checkTheShoppingListMenuButton = shoppingListSettings.getSubMenu().getItem(0);
             sendShoppingListMenuButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -152,8 +150,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (savedInstanceState == null) {
                 setTitle("Toate retetele tale");
-//            Toolbar toolbarTitle = getTitle()findViewById(R.id.toolbar);
-//            toolbarTitle.setTitle("Proceduri");
                 displayAllRecipes();
                 navigationView.setCheckedItem(R.id.nav_procedures);
             }
@@ -209,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void updateProfileData(FirebaseUser currentUser, Application application) {
+    private void updateProfileData(FirebaseUser currentUser) {
         NavigationView navigationView = findViewById(R.id.nav_view);
         LinearLayout linearLayout = (LinearLayout) navigationView.getHeaderView(0);
         mUsernameDisplay = linearLayout.findViewById(R.id.username_id);
@@ -241,9 +237,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_createProcedure:
                 displayCreateNewRecipe();
                 break;
-            case R.id.nav_configuration:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ConfigurationFragment()).commit();
-                break;
             case R.id.nav_read_qr_recipe:
                 startActivityForResult(new Intent(this, DecoderActivity.class), REQUEST_CODE_QR_READER);
                 break;
@@ -253,10 +246,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
             case R.id.nav_share:
-                Toast.makeText(this, "Share!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
-                Toast.makeText(this, "Send!", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -265,8 +256,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayCreateNewRecipe() {
-//        Toolbar toolbarTitle = findViewById(R.id.toolbar);
-//        toolbarTitle.setTitle("O procedura noua");
         Fragment addNewRecipe = new AddNewRecipe();
         Bundle bundleCreate = new Bundle();
         bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
@@ -297,8 +286,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayAllRecipes() {
-//        Toolbar toolbarTitle = findViewById(R.id.toolbar);
-//        toolbarTitle.setTitle("Retetele tale");
         Fragment findFragment = mFragmentManager.findFragmentByTag(TAG_DISPLAY_RECIPES_FRAGMENT);
         if (findFragment != null) {
             for (int i = 0; i < mFragmentManager.getBackStackEntryCount(); ++i) {
@@ -375,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT:
                         toolbar.setTitle("Pasii retetei");
                         navigationView.getMenu().getItem(0).setChecked(false);
-                        toolbar.setSubtitle("");
+                        toolbar.setSubtitle(mDataManager.getSelectedRecipeTitle());
                         shoppingListSettings.setVisible(false);
                         mShoppingListButton.setVisibility(View.VISIBLE);
                         break;

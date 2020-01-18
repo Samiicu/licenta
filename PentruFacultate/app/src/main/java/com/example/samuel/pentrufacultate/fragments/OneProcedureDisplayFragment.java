@@ -73,15 +73,13 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     private edu.cmu.pocketsphinx.SpeechRecognizer recognizer = null;
     private Intent recognizerIntent;
     private TextToSpeech mTTS;
-    private String voiceInput;
     private int mCurrentStepPosition = 0;
     private AdapterForDisplaySteps adapterForDisplaySteps;
     private RecipeModel mProcedure;
-    private TextView procedureName;
     private ArrayList<String> mProcedureSteps = new ArrayList<>();
     private EditDistanceCalculator editDistanceCalculator = new EditDistanceCalculator();
-    private AudioManager aManager;
-    DataManager dataManager;
+
+    private DataManager dataManager;
     private Context mContext;
 
 
@@ -92,9 +90,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         mProcedure = RecipeModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
         mProcedureSteps = mProcedure.getSteps();
         adapterForDisplaySteps = new AdapterForDisplaySteps(mContext, mProcedure.getSteps());
-        // start speech recogniser
-//        resetSpeechRecognizer();
-        aManager = (AudioManager) getActivity().getSystemService(mContext.AUDIO_SERVICE);
         mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
 
             @Override
@@ -117,7 +112,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
         dataManager = DataManager.getInstance(mContext);
         dataManager.setAdapterForShoppingListByTitle(mContext, mProcedure.getTitle());
-//        runRecognizerSetup();
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
     }
 
@@ -170,9 +164,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
 
             }
         });
-//        speech.startListening(recognizerIntent);
-        procedureName = view.findViewById(R.id.procedure_name);
-        procedureName.setText(mProcedure.getTitle());
         RecyclerView recyclerView = view.findViewById(R.id.display_all_steps);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         Log.d(TAG, "onViewCreated: " + recyclerView);
@@ -308,17 +299,7 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                     mCurrentStepPosition = 0;
                     speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
-                case "goToStep":
-                    mCurrentStepPosition = Integer.valueOf(stripNonDigits(voiceInput)) - 1;
-                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
-                        speak(mProcedureSteps.get(mCurrentStepPosition));
-                    } else {
-                        startListeningSpeech();
-                        Log.e(TAG, "parseVoiceCommand: repeat step didn't exist ");
-                    }
-                    break;
                 default:
-//                    speech.startListening(recognizerIntent);
                     break;
             }
         } catch (Exception ignored) {
@@ -344,17 +325,16 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
         Log.i(TAG, "resume");
         super.onResume();
         runRecognizerSetup();
-//        resetSpeechRecognizer();
-//        speech.startListening(recognizerIntent);
     }
 
     @Override
     public void onPause() {
         Log.i(TAG, "pause");
         super.onPause();
-        recognizer.removeListener(this);
-        recognizer.stop();
-//        speech.stopListening();
+        if (recognizer != null) {
+            recognizer.removeListener(this);
+            recognizer.stop();
+        }
     }
 
     @Override
@@ -370,9 +350,6 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
     public void onStop() {
         Log.i(TAG, "stop");
         super.onStop();
-//        if (speech != null) {
-//            speech.destroy();
-//        }
     }
 
 
@@ -419,8 +396,8 @@ public class OneProcedureDisplayFragment extends Fragment implements Recognition
                 .getRecognizer();
         recognizer.addListener(this);
 
-        /** In your application you might not need to add all those searches.
-         * They are added here for demonstration. You can leave just one.
+        /* In your application you might not need to add all those searches.
+          They are added here for demonstration. You can leave just one.
          */
 
         // Create keyword-activation search.

@@ -2,8 +2,10 @@ package com.example.samuel.pentrufacultate.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,17 +31,17 @@ import com.google.firebase.auth.FirebaseUser;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private static final String REASON ="reason" ;
+    private static final String REASON = "reason";
     private EditText inputEmail, inputPassword, inputName;
     private ProgressBar progressBar;
-    private String EXTRA_EMAIL="email";
-    private String EXTRA_PASSWORD="password";
+    private String EXTRA_EMAIL = "email";
+    private String EXTRA_PASSWORD = "password";
     private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
 
 
     //add Firebase Database stuff
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference mUsersDatabase =   mDatabase.child("users");
+    private DatabaseReference mUsersDatabase = mDatabase.child("users");
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -109,32 +111,25 @@ public class RegisterActivity extends AppCompatActivity {
                         .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                //reset the text
-                                Toast.makeText(RegisterActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+
+
                                 progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
                                     Toast.makeText(RegisterActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     FirebaseUser user = task.getResult().getUser();
-                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName( inputName.getText().toString()).build();
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(inputName.getText().toString()).build();
 
-                                    user.updateProfile(profileUpdates);
-                                    Log.d(TAG, "onComplete: user"+user.toString());
-                                    Log.d(TAG, "onComplete: userUID"+user.getUid());
-//                                    writeNewUser(user.getUid(), inputName.getText().toString(), user.getEmail());
-                                    Intent loginIntentWithCredentials=new Intent(RegisterActivity.this, MainActivity.class);
+                                    if (user != null) {
+                                        user.updateProfile(profileUpdates);
+                                        Log.d(TAG, "onComplete: user" + user.toString());
+                                        Log.d(TAG, "onComplete: userUID" + user.getUid());
+                                    }
+                                    Intent loginIntentWithCredentials = new Intent(RegisterActivity.this, MainActivity.class);
                                     loginIntentWithCredentials.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     loginIntentWithCredentials.addCategory(Intent.CATEGORY_LAUNCHER);
-//                                    loginIntentWithCredentials.setAction(LOGIN_WITH_CREDENTIALS);
-////                                    loginIntentWithCredentials.putExtra(REASON,LOGIN_WITH_CREDENTIALS);
-////                                    loginIntentWithCredentials.setAction(Intent.ACTION_MAIN);
 
-//                                    loginIntentWithCredentials.putExtra(EXTRA_EMAIL,email);
-//                                    loginIntentWithCredentials.putExtra(EXTRA_PASSWORD,password);
 
                                     startActivity(loginIntentWithCredentials);
                                     finish();
@@ -160,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         mUsersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " );
+                Log.d(TAG, "onDataChange: ");
             }
 
             @Override

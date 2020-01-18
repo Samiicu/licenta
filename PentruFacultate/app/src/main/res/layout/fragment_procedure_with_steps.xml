@@ -3,21 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
-    <TextView
-        android:id="@+id/procedure_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginStart="12sp"
-        android:text="Titlu procedura"
-        android:textSize="30sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/display_all_steps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/procedure_name"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="3dp"
