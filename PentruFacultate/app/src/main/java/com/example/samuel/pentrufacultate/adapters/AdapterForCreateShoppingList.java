@@ -49,8 +49,7 @@ public class AdapterForCreateShoppingList extends RecyclerView.Adapter<AdapterFo
         Log.e(TAG, "onBindViewHolder: " + shoppingList.getItemFromPosition(position).getName());
         ShoppingItem item = shoppingList.getItemFromPosition(position);
         holder.nameShoppingItem.setText(item.getName());
-        holder.quantityShoppingItem.setText(item.getQuantity());
-        holder.measureShoppingItem.setText(item.getMeasure());
+
         holder.checkBoxShoppingItemItem.setChecked(item.isChecked());
     }
 
@@ -63,13 +62,9 @@ public class AdapterForCreateShoppingList extends RecyclerView.Adapter<AdapterFo
     public String getShoppingListTitle() {
         return shoppingList.getTitle();
     }
-
-
-    // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameShoppingItem;
-        TextView quantityShoppingItem;
-        TextView measureShoppingItem;
+
         CheckBox checkBoxShoppingItemItem;
 
 
@@ -77,16 +72,12 @@ public class AdapterForCreateShoppingList extends RecyclerView.Adapter<AdapterFo
             super(itemView);
             nameShoppingItem = itemView.findViewById(R.id.text_shopping_item);
             checkBoxShoppingItemItem = itemView.findViewById(R.id.checkbox_shopping_list_item);
-            measureShoppingItem = itemView.findViewById(R.id.measure_item_shopping_list);
-            quantityShoppingItem = itemView.findViewById(R.id.quantity_shopping_list_item);
             checkBoxShoppingItemItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     DataManager.getInstance(null).notifyStatusChange();
                 }
             });
-
-//            textInputLayout = itemView.findViewById(R.id.procedure_text_input_item);
         }
 
 

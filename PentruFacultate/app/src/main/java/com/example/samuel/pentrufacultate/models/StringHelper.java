@@ -26,10 +26,6 @@ public class StringHelper {
         for (ShoppingItem item : shoppingList.getShoppingItems()) {
             if (item.isChecked()) {
                 stringBuilder.append(item.getName())
-                        .append("  ")
-                        .append(item.getQuantity())
-                        .append(" ")
-                        .append(item.getMeasure())
                         .append("\n");
             }
         }

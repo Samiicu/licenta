@@ -1,6 +1,7 @@
 package com.example.samuel.pentrufacultate.managers;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -24,11 +25,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -56,8 +55,9 @@ public class DataManager {
     //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
-    private ChildEventListener mChildEventListenerRecips, mChildEventListenerShoppingList;
+    private ChildEventListener mChildEventListenerRecipes, mChildEventListenerShoppingList;
     private String selectedRecipeTitle;
+    private ArrayList<String> dataForAutoCompleteProductSearch = new ArrayList<>();
 
 
     public static DataManager getInstance(Context context) {
@@ -76,7 +76,12 @@ public class DataManager {
             dataManagerInstance.mShoppingListsData = new CopyOnWriteArrayList<>();
             dataManagerInstance.statusChangeListeners = new CopyOnWriteArrayList<>();
             dataManagerInstance.mAdapterForDisplayRecipes = new AdapterForDisplayRecipes(context, dataManagerInstance.mRecipesData);
-
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    dataManagerInstance.dataForAutoCompleteProductSearch = dataManagerInstance.databaseHelper.getAllProducts();
+                }
+            });
         }
         return dataManagerInstance;
     }
@@ -184,9 +189,9 @@ public class DataManager {
 
     public void addListenerForDbRecipes() {
         // create and add the eventChildListener just once per DataManagerInstance
-        if (this.mChildEventListenerRecips == null) {
+        if (this.mChildEventListenerRecipes == null) {
             // create
-            mChildEventListenerRecips = new ChildEventListener() {
+            mChildEventListenerRecipes = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     RecipeModel receivedProcedure = RecipeModel.fromJson((String) dataSnapshot.getValue());
@@ -235,7 +240,7 @@ public class DataManager {
                 }
             };
             // add
-            dataManagerInstance.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF).addChildEventListener(mChildEventListenerRecips);
+            dataManagerInstance.firebaseReferences.get(USER_RECIPES_DATA_BASE_REF).addChildEventListener(mChildEventListenerRecipes);
         }
 
     }
@@ -352,6 +357,10 @@ public class DataManager {
         ) {
             listener.onStatusChange();
         }
+    }
+
+    public ArrayList<String> getDataForAutoCompleteProductSearch() {
+        return dataForAutoCompleteProductSearch;
     }
 
     public interface OnStatusChangeListener {

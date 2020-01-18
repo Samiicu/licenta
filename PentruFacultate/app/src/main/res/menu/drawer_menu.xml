@@ -6,19 +6,15 @@
         <item
             android:id="@+id/nav_procedures"
             android:icon="@drawable/ic_procedure"
-            android:title="Toate Retetele" />
+            android:title="@string/toate_retetele" />
         <item
             android:id="@+id/nav_createProcedure"
             android:icon="@drawable/ic_create"
-            android:title="Creaza o reteta noua" />
+            android:title="@string/creaza_o_reteta_noua" />
         <item
             android:id="@+id/nav_read_qr_recipe"
             android:icon="@drawable/ic_qr_reader"
-            android:title="Adauga reteta din QR code" />
-        <item
-            android:id="@+id/nav_configuration"
-            android:icon="@drawable/ic_configuration"
-            android:title="Configurari" />
+            android:title="@string/adauga_reteta_din_qr_code" />
     </group>
     <item
         android:id="@+id/shopping_list_settings"
@@ -34,7 +30,7 @@
                 android:title="@string/send" />
         </menu>
     </item>
-    <item android:title="Setari Cont">
+    <item android:title="@string/setari_cont">
         <menu>
             <item
                 android:id="@+id/nav_logout"

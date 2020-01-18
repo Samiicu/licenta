@@ -65,6 +65,11 @@
     <string name="verifica_lista_de_cumparaturi">Verifica lista de cumparaturi</string>
     <string name="setari_lista_de_cumparaturi">Setari lista de cumparaturi</string>
     <string name="lista_salvata">Lista salvata</string>
+    <string name="more_info">Mai multe detalii</string>
+    <string name="adauga_reteta_din_qr_code">Adauga reteta din QR code</string>
+    <string name="creaza_o_reteta_noua">Creaza o reteta noua</string>
+    <string name="toate_retetele">Toate Retetele</string>
+    <string name="setari_cont">Setari Cont</string>
 </resources>
 
 
