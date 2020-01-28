@@ -1,6 +1,5 @@
 package com.example.samuel.pentrufacultate.activities;
 
-import android.app.Application;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,13 +24,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.AddNewRecipe;
-import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
-import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
-import com.example.samuel.pentrufacultate.fragments.CheckShoppingList;
+import com.example.samuel.pentrufacultate.fragments.AddNewRecipeFragment;
+import com.example.samuel.pentrufacultate.fragments.AddShoppingListFragment;
+import com.example.samuel.pentrufacultate.fragments.DisplayAllRecipesFragment;
+import com.example.samuel.pentrufacultate.fragments.CheckShoppingListFragment;
 
 import com.example.samuel.pentrufacultate.managers.DataManager;
-import com.example.samuel.pentrufacultate.managers.SyncInformationJobService;
+import com.example.samuel.pentrufacultate.managers.SyncProductsInformationJobService;
 import com.example.samuel.pentrufacultate.models.QrLoader;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.StringHelper;
@@ -256,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayCreateNewRecipe() {
-        Fragment addNewRecipe = new AddNewRecipe();
+        Fragment addNewRecipe = new AddNewRecipeFragment();
         Bundle bundleCreate = new Bundle();
         bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
         addNewRecipe.setArguments(bundleCreate);
@@ -265,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayAddShoppingList() {
-        Fragment addShoppingListFragment = new AddShoppingList();
+        Fragment addShoppingListFragment = new AddShoppingListFragment();
         Bundle bundleCreate = new Bundle();
         bundleCreate.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
         addShoppingListFragment.setArguments(bundleCreate);
@@ -274,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayCheckTheShoppingListFragment() {
-        Fragment checkShoppingListFragment = new CheckShoppingList();
+        Fragment checkShoppingListFragment = new CheckShoppingListFragment();
         mFragmentManager.beginTransaction().replace(R.id.fragment_container, checkShoppingListFragment, TAG_CHECK_SHOPPING_LIST_FRAGMENT).addToBackStack(TAG_CHECK_SHOPPING_LIST_FRAGMENT).commit();
         mCurrentFragment = checkShoppingListFragment;
     }
@@ -297,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             mCurrentFragment = findFragment;
         } else {
-            Fragment displayProceduresFragment = new AllProceduresDisplayFragment();
+            Fragment displayProceduresFragment = new DisplayAllRecipesFragment();
             Bundle bundleDisplay = new Bundle();
             bundleDisplay.putString(USER_UID_EXTRA, mDataManager.getCurrentUserUid());
             displayProceduresFragment.setArguments(bundleDisplay);
@@ -312,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
         long currentTime = System.currentTimeMillis();
         if (lastUpdate + TimeUnit.HOURS.toMillis(24) < currentTime) {
-            ComponentName componentName = new ComponentName(this, SyncInformationJobService.class);
+            ComponentName componentName = new ComponentName(this, SyncProductsInformationJobService.class);
             JobInfo jobInfo = new JobInfo.Builder(12, componentName)
                     .setMinimumLatency(3 * 1000) // Wait at least 30s
                     .setOverrideDeadline(6 * 1000) // Maximum delay 60s

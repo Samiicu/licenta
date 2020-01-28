@@ -25,13 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.activities.MainActivity;
-import com.example.samuel.pentrufacultate.adapters.RetailStoreListAdapter;
+import com.example.samuel.pentrufacultate.adapters.AdapterForDisplayStores;
 import com.example.samuel.pentrufacultate.managers.DataManager;
-import com.example.samuel.pentrufacultate.managers.GpsTracker;
+import com.example.samuel.pentrufacultate.managers.GpsTrackerManager;
 import com.example.samuel.pentrufacultate.models.ShoppingItem;
 import com.example.samuel.pentrufacultate.models.ShoppingList;
 import com.example.samuel.pentrufacultate.models.StringHelper;
-import com.example.samuel.pentrufacultate.products.apis.ProductsApi;
+import com.example.samuel.pentrufacultate.products.apis.ProductsAPIs;
 import com.example.samuel.pentrufacultate.products.models.CatalogProduct;
 import com.example.samuel.pentrufacultate.products.models.get_stores_for_products.RetailStore;
 import com.example.samuel.pentrufacultate.products.models.get_stores_for_products.RetailStores;
@@ -47,9 +47,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
-public class CheckShoppingList extends Fragment implements View.OnClickListener, Callback<RetailStores> {
+public class CheckShoppingListFragment extends Fragment implements View.OnClickListener, Callback<RetailStores> {
     private static final int PERMISSION_ID = 11;
-    private final String TAG = StringHelper.getTag(MainActivity.class, CheckShoppingList.class);
+    private final String TAG = StringHelper.getTag(MainActivity.class, CheckShoppingListFragment.class);
     private TextView tvProgressLabel;
     private Button searchStoresBtn;
     private SeekBar seekBar;
@@ -63,9 +63,9 @@ public class CheckShoppingList extends Fragment implements View.OnClickListener,
     Location mLastLocation;
     FusedLocationProviderClient mFusedLocationClient;
     RecyclerView mRecyclerView;
-    private RetailStoreListAdapter mAdapter;
+    private AdapterForDisplayStores mAdapter;
     // GPSTracker class
-    GpsTracker gps;
+    GpsTrackerManager gps;
 
 
     private int MAX_RESULT_COUNT = 7;
@@ -135,7 +135,7 @@ public class CheckShoppingList extends Fragment implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.search_stores_btn:
                 // create class object
-                gps = new GpsTracker(mContext);
+                gps = new GpsTrackerManager(mContext);
 
                 // check if GPS enabled
                 if (gps.canGetLocation()) {
@@ -174,7 +174,7 @@ public class CheckShoppingList extends Fragment implements View.OnClickListener,
                 @Override
                 public void run() {
                     mRecyclerView.removeAllViews();
-                    mAdapter = new RetailStoreListAdapter(getContext(), resultDisplayAdapterList);
+                    mAdapter = new AdapterForDisplayStores(getContext(), resultDisplayAdapterList);
                     mRecyclerView.setAdapter(mAdapter);
                     RecyclerView.LayoutManager layoutManager =
                             new LinearLayoutManager(getContext());
@@ -200,10 +200,10 @@ public class CheckShoppingList extends Fragment implements View.OnClickListener,
                 Retrofit retrofit = new Retrofit.Builder().baseUrl("https://www.monitorulpreturilor.info/").addConverterFactory(SimpleXmlConverterFactory.create())
                         .build();
 
-                ProductsApi rssapi = retrofit.create(ProductsApi.class);
+                ProductsAPIs rssapi = retrofit.create(ProductsAPIs.class);
 
                 Call<RetailStores> call = rssapi.getStoresForProductsByLatLon(latitude, longitude, distanceInMeters, productsDividedByComma, orderBy);
-                call.enqueue(CheckShoppingList.this);
+                call.enqueue(CheckShoppingListFragment.this);
             }
         }).start();
 

@@ -3,8 +3,7 @@ package com.example.samuel.pentrufacultate.products.clients;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.samuel.pentrufacultate.managers.DataManager;
-import com.example.samuel.pentrufacultate.products.apis.ProductsApi;
+import com.example.samuel.pentrufacultate.products.apis.ProductsAPIs;
 import com.example.samuel.pentrufacultate.products.models.CatalogProduct;
 import com.example.samuel.pentrufacultate.products.models.CatalogProducts;
 import com.example.samuel.pentrufacultate.products.storage.DatabaseHelper;
@@ -29,7 +28,7 @@ public class AllProductsCallClient implements Callback<CatalogProducts> {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://www.monitorulpreturilor.info/").addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
 
-        ProductsApi rssapi = retrofit.create(ProductsApi.class);
+        ProductsAPIs rssapi = retrofit.create(ProductsAPIs.class);
 
         Call<CatalogProducts> call = rssapi.getAllProducts();
         call.enqueue(this);

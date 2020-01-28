@@ -55,7 +55,7 @@ import static android.widget.Toast.makeText;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
-public class OneProcedureDisplayFragment extends Fragment implements RecognitionListener {
+public class DisplayOneRecipeFragment extends Fragment implements RecognitionListener {
     private static final String TAG = "APP_LOG_display";
 
     VoiceCommander voiceCommander = new VoiceCommander();

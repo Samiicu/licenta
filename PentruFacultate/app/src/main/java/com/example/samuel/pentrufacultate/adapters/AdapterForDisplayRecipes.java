@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.example.samuel.pentrufacultate.activities.MainActivity;
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.AllProceduresDisplayFragment;
-import com.example.samuel.pentrufacultate.fragments.OneProcedureDisplayFragment;
+import com.example.samuel.pentrufacultate.fragments.DisplayAllRecipesFragment;
+import com.example.samuel.pentrufacultate.fragments.DisplayOneRecipeFragment;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
 import com.example.samuel.pentrufacultate.models.StringHelper;
@@ -24,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDisplayRecipes.ViewHolder> {
-    private static final String TAG = StringHelper.getTag(AllProceduresDisplayFragment.class, AdapterForDisplayRecipes.class);
+    private static final String TAG = StringHelper.getTag(DisplayAllRecipesFragment.class, AdapterForDisplayRecipes.class);
     private ArrayList<RecipeModel> mData;
     private RecipeModel mRecentlyDeletedItem;
     private int mRecentlyDeletedItemPosition;
@@ -53,15 +53,15 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                 public void onClick(View v) {
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
                     DataManager.getInstance(mMainActivity).saveSelectedRecipeTitle(titleProcedure.getText());
-                    OneProcedureDisplayFragment oneProcedureDisplayFragment = new OneProcedureDisplayFragment();
+                    DisplayOneRecipeFragment displayOneRecipeFragment = new DisplayOneRecipeFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("ProcedureToDisplayJSON", DataManager.getInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
                     bundle.putString("userUid", DataManager.getInstance(mMainActivity).getCurrentUserUid());
 //                    mMainActivity.hideMainFragmentIfNeeded();
-                    oneProcedureDisplayFragment.setArguments(bundle);
-                    MainActivity.mCurrentFragment = oneProcedureDisplayFragment;
+                    displayOneRecipeFragment.setArguments(bundle);
+                    MainActivity.mCurrentFragment = displayOneRecipeFragment;
                     mMainActivity.mFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, oneProcedureDisplayFragment)
+                            .replace(R.id.fragment_container, displayOneRecipeFragment)
                             .addToBackStack(StringHelper.TAG_DISPLAY_ONE_RECIPE_FRAGMENT)
                             .commit();
                 }

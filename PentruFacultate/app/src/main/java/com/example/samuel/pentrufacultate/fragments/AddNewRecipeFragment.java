@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 import static com.example.samuel.pentrufacultate.models.StringHelper.*;
 
-public class AddNewRecipe extends Fragment {
+public class AddNewRecipeFragment extends Fragment {
 
 
     private static final String ACTION_SHOW_RECIPES = "show_recipes";

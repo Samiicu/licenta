@@ -4,6 +4,6 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
 
-public class FirebaseDatabaseReferences {
+public class FirebaseReferencesManager {
     HashMap<String, DatabaseReference> firebaseReferences;
 }

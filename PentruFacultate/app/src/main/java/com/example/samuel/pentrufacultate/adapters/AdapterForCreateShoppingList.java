@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.fragments.AddShoppingList;
+import com.example.samuel.pentrufacultate.fragments.AddShoppingListFragment;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 import com.example.samuel.pentrufacultate.models.ShoppingItem;
 import com.example.samuel.pentrufacultate.models.ShoppingList;
@@ -21,7 +21,7 @@ import com.example.samuel.pentrufacultate.models.StringHelper;
 import java.util.ArrayList;
 
 public class AdapterForCreateShoppingList extends RecyclerView.Adapter<AdapterForCreateShoppingList.ViewHolder> {
-    private static final String TAG = StringHelper.getTag(AddShoppingList.class, AdapterForCreateShoppingList.class);
+    private static final String TAG = StringHelper.getTag(AddShoppingListFragment.class, AdapterForCreateShoppingList.class);
     ArrayList<Boolean> flag = new ArrayList<>();
     private ShoppingList shoppingList;
     //    private List<String> mData;

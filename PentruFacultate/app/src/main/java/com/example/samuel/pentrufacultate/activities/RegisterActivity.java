@@ -31,20 +31,12 @@ import com.google.firebase.auth.FirebaseUser;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private static final String REASON = "reason";
     private EditText inputEmail, inputPassword, inputName;
     private ProgressBar progressBar;
-    private String EXTRA_EMAIL = "email";
-    private String EXTRA_PASSWORD = "password";
-    private static final String LOGIN_WITH_CREDENTIALS = "LOGIN_WITH_CREDENTIALS";
 
-
-    //add Firebase Database stuff
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mUsersDatabase = mDatabase.child("users");
     private FirebaseAuth auth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

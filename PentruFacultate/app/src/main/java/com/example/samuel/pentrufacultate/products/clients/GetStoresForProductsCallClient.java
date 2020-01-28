@@ -3,7 +3,7 @@ package com.example.samuel.pentrufacultate.products.clients;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.samuel.pentrufacultate.products.apis.ProductsApi;
+import com.example.samuel.pentrufacultate.products.apis.ProductsAPIs;
 import com.example.samuel.pentrufacultate.products.models.get_stores_for_products.RetailStores;
 
 import retrofit2.Call;
@@ -21,7 +21,7 @@ public class GetStoresForProductsCallClient implements Callback<RetailStores> {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://www.monitorulpreturilor.info/").addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
 
-        ProductsApi rssapi = retrofit.create(ProductsApi.class);
+        ProductsAPIs rssapi = retrofit.create(ProductsAPIs.class);
 
         Call<RetailStores> call = rssapi.getStoresForProductsByLatLon("47.1725036", "27.547524", "3700", "207635,202291,200299,208242,219309", "price");
         call.enqueue(this);

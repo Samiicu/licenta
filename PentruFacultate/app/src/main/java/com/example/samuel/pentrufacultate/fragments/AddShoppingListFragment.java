@@ -27,7 +27,7 @@ import com.example.samuel.pentrufacultate.products.storage.DatabaseHelper;
 
 import java.util.Objects;
 
-public class AddShoppingList extends Fragment {
+public class AddShoppingListFragment extends Fragment {
 
     private ImageButton addNewItemButton;
     private DatabaseHelper mDataBaseHelper;
@@ -35,7 +35,7 @@ public class AddShoppingList extends Fragment {
     private RecyclerView inputRecipesRecyclerView;
     private DataManager dataManager;
     private boolean shoppingListHaveDifferences = false;
-    private final static String TAG = StringHelper.getTag(MainActivity.class, AddShoppingList.class);
+    private final static String TAG = StringHelper.getTag(MainActivity.class, AddShoppingListFragment.class);
 
     @Nullable
     @Override
