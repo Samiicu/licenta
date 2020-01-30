@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG_CREATE_NEW_RECIPE_FRAGMENT = "create_new_recipe_fragment";
     private static final String TAG_ADD_SHOPPING_LIST_FRAGMENT = "add_shopping_list";
     private static final String TAG_CHECK_SHOPPING_LIST_FRAGMENT = "check_shopping_list";
+    private static final int SYNC_MINIMUM_LATENCY = 3 * 1000;
+    private static final int SYNC_MAXIMUM_DELAY = 6 * 1000;
+    private static final long SYNC_MINIMUM_PERIOD = TimeUnit.HOURS.toMillis(24);
 
 
     public static Fragment mCurrentFragment;
@@ -100,9 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFragmentManager.addOnBackStackChangedListener(this);
             mDataManager = DataManager.getInstance(this);
             mDatabase = FirebaseDatabase.getInstance().getReference();
-
             updateProfileData(mFireBaseUser);
-
             toolbar = findViewById(R.id.toolbar);
             mShoppingListButton = toolbar.findViewById(R.id.shopping_list);
             mShoppingListButton.setOnClickListener(new View.OnClickListener() {
@@ -309,11 +310,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences generalSharedPref = getSharedPreferences("General", MODE_PRIVATE);
         long lastUpdate = generalSharedPref.getLong("last_update_of_products", 0);
         long currentTime = System.currentTimeMillis();
-        if (lastUpdate + TimeUnit.HOURS.toMillis(24) < currentTime) {
+        if (lastUpdate + SYNC_MINIMUM_PERIOD < currentTime) {
             ComponentName componentName = new ComponentName(this, SyncProductsInformationJobService.class);
-            JobInfo jobInfo = new JobInfo.Builder(12, componentName)
-                    .setMinimumLatency(3 * 1000) // Wait at least 30s
-                    .setOverrideDeadline(6 * 1000) // Maximum delay 60s
+            JobInfo jobInfo = new JobInfo.Builder(StringHelper.SYNC_PRODUCTS_DATA_JOB_ID, componentName)
+                    .setMinimumLatency(SYNC_MINIMUM_LATENCY)
+                    .setOverrideDeadline(SYNC_MAXIMUM_DELAY)
                     .build();
             JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
             int resultCode = jobScheduler.schedule(jobInfo);
