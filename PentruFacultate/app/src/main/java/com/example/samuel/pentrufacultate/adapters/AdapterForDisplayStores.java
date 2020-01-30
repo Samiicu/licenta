@@ -22,26 +22,26 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class RetailStoreListAdapter extends RecyclerView.Adapter<RetailStoreListAdapter.RestaurantViewHolder> {
+public class AdapterForDisplayStores extends RecyclerView.Adapter<AdapterForDisplayStores.RestaurantViewHolder> {
     private ArrayList<RetailStore> mRetailStores = new ArrayList<>();
     String NO_PRICE = "0";
     Context mContext;
 
-    public RetailStoreListAdapter(Context context, ArrayList<RetailStore> restaurants) {
+    public AdapterForDisplayStores(Context context, ArrayList<RetailStore> restaurants) {
         mContext = context;
         mRetailStores = restaurants;
 
     }
 
     @Override
-    public RetailStoreListAdapter.RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AdapterForDisplayStores.RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_result_search_item, parent, false);
         RestaurantViewHolder viewHolder = new RestaurantViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RetailStoreListAdapter.RestaurantViewHolder holder, int position) {
+    public void onBindViewHolder(AdapterForDisplayStores.RestaurantViewHolder holder, int position) {
         holder.bindRestaurant(mRetailStores.get(position));
     }
 
@@ -88,11 +88,11 @@ public class RetailStoreListAdapter extends RecyclerView.Adapter<RetailStoreList
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     ViewGroup viewGroup = v.findViewById(android.R.id.content);
                     View dialogView = LayoutInflater.from(v.getContext()).inflate(R.layout.customview, viewGroup, false);
-                    SearchResponseAdapter searchResponseAdapter = new SearchResponseAdapter(mContext, retailStore.getProducts().getProductsList());
+                    AdapterForSearchResponse adapterForSearchResponse = new AdapterForSearchResponse(mContext, retailStore.getProducts().getProductsList());
                     TextView textView= (TextView) ((LinearLayout) dialogView).getChildAt(1);
                     textView.setText(retailStore.getName());
                     RecyclerView foundItemsView = (RecyclerView) ((LinearLayout) dialogView).getChildAt(3);
-                    foundItemsView.setAdapter(searchResponseAdapter);
+                    foundItemsView.setAdapter(adapterForSearchResponse);
                     RecyclerView.LayoutManager layoutManager =
                             new LinearLayoutManager(mContext);
                     foundItemsView.setLayoutManager(layoutManager);

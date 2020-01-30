@@ -15,21 +15,18 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.samuel.pentrufacultate.R;
-import com.example.samuel.pentrufacultate.network.LoginHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
-    public static final String ACCOUNT_TYPE = "com.example.samuel.pentrufacultate.account";
     public static final String TAG = LoginActivity.class.getSimpleName();
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset;
-    private static String EXTRA_EMAIL = "email";
-    private static String EXTRA_NAME = "name";
+
     private static String LOGGED = "LOGGED";
 
 
@@ -37,11 +34,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate: ");
-//        if (auth.getCurrentUser() != null) {
-//            LoginHelper.logIn();
-//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//            finish();
-//        }
 
         // set the view now
         setContentView(R.layout.activity_login);
@@ -93,9 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
+
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
                                     // there was an error
@@ -105,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    LoginHelper.loggedIn();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     intent.setAction(LOGGED);
                                     startActivity(intent);

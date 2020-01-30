@@ -17,26 +17,26 @@ import com.example.samuel.pentrufacultate.products.models.get_stores_for_product
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchResponseAdapter extends RecyclerView.Adapter<SearchResponseAdapter.RestaurantViewHolder> {
+public class AdapterForSearchResponse extends RecyclerView.Adapter<AdapterForSearchResponse.RestaurantViewHolder> {
     private List<Product> mStoreItems = new ArrayList<>();
     String NO_PRICE = "0";
     Context mContext;
 
-    public SearchResponseAdapter(Context context, List<Product> products) {
+    public AdapterForSearchResponse(Context context, List<Product> products) {
         mContext = context;
         mStoreItems = products;
 
     }
 
     @Override
-    public SearchResponseAdapter.RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AdapterForSearchResponse.RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_detalied_result_search_item, parent, false);
         RestaurantViewHolder viewHolder = new RestaurantViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(SearchResponseAdapter.RestaurantViewHolder holder, int position) {
+    public void onBindViewHolder(AdapterForSearchResponse.RestaurantViewHolder holder, int position) {
         holder.bindRestaurant(mStoreItems.get(position));
     }
 

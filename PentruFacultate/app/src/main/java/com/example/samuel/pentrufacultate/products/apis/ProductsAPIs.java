@@ -7,7 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ProductsApi {
+public interface ProductsAPIs {
 
     @GET("pmonsvc/Retail/GetCatalogProductsByNameNetwork?prodname=")
     Call<CatalogProducts> getAllProducts();

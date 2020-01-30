@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 
-public class AllProceduresDisplayFragment extends Fragment {
-    private static final String TAG = AllProceduresDisplayFragment.class.getSimpleName();
+public class DisplayAllRecipesFragment extends Fragment {
+    private static final String TAG = DisplayAllRecipesFragment.class.getSimpleName();
     //    AdapterForDisplayRecipes adapterForDisplayProcedures;
 //    private ArrayList<RecipeModel> mProcedures = new ArrayList<>();
     private String uidCurrentUser;

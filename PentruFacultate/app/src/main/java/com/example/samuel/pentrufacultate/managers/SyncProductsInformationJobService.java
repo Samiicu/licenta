@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.example.samuel.pentrufacultate.products.clients.AllProductsCallClient;
 
-public class SyncInformationJobService extends JobService {
-    private static final String TAG = SyncInformationJobService.class.getSimpleName();
+public class SyncProductsInformationJobService extends JobService {
+    private static final String TAG = SyncProductsInformationJobService.class.getSimpleName();
     boolean isWorking = false;
     boolean jobCancelled = false;
 
@@ -32,7 +32,7 @@ public class SyncInformationJobService extends JobService {
 
     private void doWork(JobParameters jobParameters) {
         AllProductsCallClient getProductsClient = new AllProductsCallClient();
-        getProductsClient.run(SyncInformationJobService.this);
+        getProductsClient.run(SyncProductsInformationJobService.this);
     }
 
     // Called if the job was cancelled before being finished

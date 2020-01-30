@@ -14,9 +14,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-public class GpsTracker extends Service implements LocationListener {
+public class GpsTrackerManager extends Service implements LocationListener {
 
     private final Context mContext;
 
@@ -42,7 +41,7 @@ public class GpsTracker extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GpsTracker(Context context) {
+    public GpsTrackerManager(Context context) {
         this.mContext = context;
         getLocation();
     }
@@ -114,7 +113,7 @@ public class GpsTracker extends Service implements LocationListener {
 
     public void stopUsingGPS(){
         if(locationManager != null){
-            locationManager.removeUpdates(GpsTracker.this);
+            locationManager.removeUpdates(GpsTrackerManager.this);
         }
     }
 

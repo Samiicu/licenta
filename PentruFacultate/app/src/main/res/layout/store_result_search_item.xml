@@ -91,5 +91,8 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/more_info"
         android:src="@drawable/ic_expand_more_black_24dp" />
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/LW_theme_gray_dark"/>
 </RelativeLayout>
 

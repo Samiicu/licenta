@@ -49,10 +49,7 @@ public class DataManager {
     private AdapterForCreateShoppingList mCurrentShoppingListAdapter;
     private ShoppingList mCurrentShoppingList;
     private HashMap<String, DatabaseReference> firebaseReferences;
-    //    private DatabaseReference mDatabase;
-
     private DatabaseHelper databaseHelper;
-    //    private DatabaseReference mCurrentUserDatabaseProcedures;
     private FirebaseUser currentUser;
     private RecyclerView mLayoutDisplayAllRecipes;
     private ChildEventListener mChildEventListenerRecipes, mChildEventListenerShoppingList;
