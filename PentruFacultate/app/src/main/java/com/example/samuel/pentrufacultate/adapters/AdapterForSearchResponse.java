@@ -19,8 +19,8 @@ import java.util.List;
 
 public class AdapterForSearchResponse extends RecyclerView.Adapter<AdapterForSearchResponse.RestaurantViewHolder> {
     private List<Product> mStoreItems = new ArrayList<>();
-    String NO_PRICE = "0";
-    Context mContext;
+    private String NO_PRICE = "0";
+    private Context mContext;
 
     public AdapterForSearchResponse(Context context, List<Product> products) {
         mContext = context;
@@ -71,7 +71,7 @@ public class AdapterForSearchResponse extends RecyclerView.Adapter<AdapterForSea
             String myString=product.getName()!=null?product.getName():product.getCatprod().getName();
             String upperString = myString.substring(0,1).toUpperCase() + myString.substring(1).toLowerCase();
             mProductTitle.setText(upperString);
-//            mProductCategory.setText("Categorie:"product.getCatprod().getProdcateg().getName());
+
             if (NO_PRICE.equals(product.getPrice()) || product.getPrice() == null) {
                 mProductStatus.setImageResource(R.drawable.ic_cancel_red_24dp);
 

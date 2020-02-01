@@ -44,7 +44,7 @@ public class DisplayAllRecipesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate: ");
-        mDataManager = DataManager.getInstance(getContext());
+        mDataManager = DataManager.getInstance();
         mDataManager.addListenerForDbRecipes();
         mDataManager.addListenerForShoppingListsData(getContext());
 

@@ -52,12 +52,11 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "onClick: " + titleProcedure.getText());
-                    DataManager.getInstance(mMainActivity).saveSelectedRecipeTitle(titleProcedure.getText());
+                    DataManager.getInstance().saveSelectedRecipeTitle(titleProcedure.getText());
                     DisplayOneRecipeFragment displayOneRecipeFragment = new DisplayOneRecipeFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString("ProcedureToDisplayJSON", DataManager.getInstance(mMainActivity).getRecipeWithTitle((String) titleProcedure.getText()).toJson());
-                    bundle.putString("userUid", DataManager.getInstance(mMainActivity).getCurrentUserUid());
-//                    mMainActivity.hideMainFragmentIfNeeded();
+                    bundle.putString("ProcedureToDisplayJSON", DataManager.getInstance().getRecipeWithTitle((String) titleProcedure.getText()).toJson());
+                    bundle.putString("userUid", DataManager.getInstance().getCurrentUserUid());
                     displayOneRecipeFragment.setArguments(bundle);
                     MainActivity.mCurrentFragment = displayOneRecipeFragment;
                     mMainActivity.mFragmentManager.beginTransaction()
@@ -66,7 +65,6 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
                             .commit();
                 }
             });
-//            numberProcedure = itemView.findViewById(R.id.display_number_of_procedure);
             titleProcedure = itemView.findViewById(R.id.procedure_display_title);
             numberStepsProcedure = itemView.findViewById(R.id.procedure_display_number_of_steps);
         }
@@ -125,7 +123,7 @@ public class AdapterForDisplayRecipes extends RecyclerView.Adapter<AdapterForDis
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if (!deleteReverted) {
-                    DataManager.getInstance(mMainActivity).removeRecipeFromDatabase(mRecentlyDeletedItem);
+                    DataManager.getInstance().removeRecipeFromDatabase(mRecentlyDeletedItem);
                 }
             }
         };

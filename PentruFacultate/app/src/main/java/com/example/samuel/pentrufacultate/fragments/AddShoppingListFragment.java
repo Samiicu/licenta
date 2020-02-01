@@ -43,7 +43,7 @@ public class AddShoppingListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_shopping_list, container, false);
         addNewItemButton = view.findViewById(R.id.btn_add_to_shopping_list);
         shoppingItemInput = view.findViewById(R.id.shopping_item_input);
-        dataManager = DataManager.getInstance(getContext());
+        dataManager = DataManager.getInstance();
         mDataBaseHelper = dataManager.getLocalDB();
 
         final String[] myData;
