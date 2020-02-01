@@ -16,7 +16,7 @@ import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.managers.DataManager;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
-    private AdapterForDisplayRecipes mAdapter;
+
     private Drawable icon;
     Context mContext;
     private final ColorDrawable background;
@@ -84,6 +84,6 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        DataManager.getInstance(mContext).getAdapterForDisplayRecipes().deleteItem(position);
+        DataManager.getInstance().getAdapterForDisplayRecipes().deleteItem(position);
     }
 }

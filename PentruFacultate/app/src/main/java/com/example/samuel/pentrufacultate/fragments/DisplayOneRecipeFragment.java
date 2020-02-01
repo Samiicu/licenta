@@ -2,16 +2,10 @@ package com.example.samuel.pentrufacultate.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
@@ -28,22 +22,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.samuel.pentrufacultate.R;
 import com.example.samuel.pentrufacultate.adapters.AdapterForDisplaySteps;
 import com.example.samuel.pentrufacultate.managers.DataManager;
-import com.example.samuel.pentrufacultate.models.EditDistanceCalculator;
 import com.example.samuel.pentrufacultate.models.RecipeModel;
-import com.example.samuel.pentrufacultate.models.User;
 import com.example.samuel.pentrufacultate.models.VoiceCommander;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import edu.cmu.pocketsphinx.Assets;
@@ -53,50 +42,48 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 import static android.widget.Toast.makeText;
 import static androidx.recyclerview.widget.RecyclerView.VERTICAL;
-import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
 public class DisplayOneRecipeFragment extends Fragment implements RecognitionListener {
+
     private static final String TAG = "APP_LOG_display";
-
-    VoiceCommander voiceCommander = new VoiceCommander();
-
     /* Named searches allow to quickly reconfigure the decoder */
-    private static final String KWS_SEARCH = "wakeup";
-    private static final String MENU_SEARCH = "menu";
+    private static final String WAITING_FOR_WAKEUP = "wakeup";
+    private static final String WAITING_FOR_COMMANDS = "menu";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "ok robo";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
-    private SpeechRecognizer speech = null;
-    private edu.cmu.pocketsphinx.SpeechRecognizer recognizer = null;
-    private Intent recognizerIntent;
-    private TextToSpeech mTTS;
-    private int mCurrentStepPosition = 0;
-    private AdapterForDisplaySteps adapterForDisplaySteps;
-    private RecipeModel mProcedure;
-    private ArrayList<String> mProcedureSteps = new ArrayList<>();
-    private EditDistanceCalculator editDistanceCalculator = new EditDistanceCalculator();
+    private static final int MINIMUM_SCORE = -3700;
+    private static final int MAXIMUM_SCORE = -1700;
+    private static final String REIPE_JSON_EXTRA_BUNDLE_KEY = "ProcedureToDisplayJSON";
 
-    private DataManager dataManager;
     private Context mContext;
+    private DataManager dataManager;
+    private RecipeModel mRecipe;
+    private AdapterForDisplaySteps adapterForDisplaySteps;
+    private int mCurrentStepPosition = 0;
+    private ArrayList<String> mRecipeSteps = new ArrayList<>();
+
+    private TextToSpeech mTTS;
+    private edu.cmu.pocketsphinx.SpeechRecognizer recognizer = null;
+    private VoiceCommander voiceCommander = new VoiceCommander();
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         mContext = getContext();
-        mProcedure = RecipeModel.fromJson(bundle.getString("ProcedureToDisplayJSON"));
-        mProcedureSteps = mProcedure.getSteps();
-        adapterForDisplaySteps = new AdapterForDisplaySteps(mContext, mProcedure.getSteps());
+        mRecipe = RecipeModel.fromJson(bundle.getString(REIPE_JSON_EXTRA_BUNDLE_KEY));
+        mRecipeSteps = mRecipe.getSteps();
+        adapterForDisplaySteps = new AdapterForDisplaySteps(mContext, mRecipe.getSteps());
         mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int status) {
 
                 if (status == TextToSpeech.SUCCESS) {
-
                     int result = mTTS.setLanguage(new Locale("ro", "RO"));
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -110,8 +97,8 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
             }
         });
 
-        dataManager = DataManager.getInstance(mContext);
-        dataManager.setAdapterForShoppingListByTitle(mContext, mProcedure.getTitle());
+        dataManager = DataManager.getInstance();
+        dataManager.setAdapterForShoppingListByTitle(mContext, mRecipe.getTitle());
         return inflater.inflate(R.layout.fragment_procedure_with_steps, container, false);
     }
 
@@ -129,34 +116,15 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
             return;
         }
 
-//        aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-
-
         mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                 Log.e(TAG, "onStart: speaking");
             }
 
             @Override
             public void onDone(String utteranceId) {
-//                aManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-                //something here is worng
-                Handler mainHandler = new Handler(mContext.getMainLooper());
 
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        startListeningSpeech();
-                    }
-                };
-                mainHandler.post(myRunnable);
-
-                Log.d(TAG, "onDone: speaking");
-//
-
-                Log.d(TAG, "onDone: prepared");
             }
 
             @Override
@@ -167,29 +135,10 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
         RecyclerView recyclerView = view.findViewById(R.id.display_all_steps);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         Log.d(TAG, "onViewCreated: " + recyclerView);
-//        adapter.setClickListener(this);
         DividerItemDecoration itemDecor = new DividerItemDecoration(mContext, VERTICAL);
         recyclerView.addItemDecoration(itemDecor);
         recyclerView.setAdapter(adapterForDisplaySteps);
-
-
     }
-
-    public void startListeningSpeech() {
-//        speech.startListening(recognizerIntent);
-    }
-
-
-    private void setRecogniserIntent() {
-
-        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
-                "en");
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-    }
-
 
     @Override
     public void onBeginningOfSpeech() {
@@ -198,14 +147,10 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
 
     @Override
     public void onEndOfSpeech() {
-//        Log.i(TAG, "onEndOfSpeech");
-//        speech.stopListening();
 
         Log.i("TAG", "onEndOfSpeech: " + recognizer.getSearchName());
-
-
-        if (!recognizer.getSearchName().equals(KWS_SEARCH))
-            switchSearch(KWS_SEARCH);
+        if (!recognizer.getSearchName().equals(WAITING_FOR_WAKEUP))
+            switchSearch(WAITING_FOR_WAKEUP);
     }
 
     /**
@@ -219,29 +164,24 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
             return;
 
         String text = hypothesis.getHypstr();
-        if (text.contains(KEYPHRASE))
-            switchSearch(MENU_SEARCH);
-        else
+        if (text.contains(KEYPHRASE)) {
+            switchSearch(WAITING_FOR_COMMANDS);
+        } else {
             Log.i(TAG, "onPartialResult: " + text);
-//            ((TextView) findViewById(R.id.result_text)).setText(text);
+        }
     }
 
     @Override
     public void onResult(Hypothesis hypothesis) {
 
-//        ((TextView) findViewById(R.id.result_text)).setText("");
         if (hypothesis != null) {
-
-            Log.i("TESTUS", "getBestScore: " + hypothesis.getBestScore());
-            Log.i("TESTUS", "getProb: " + hypothesis.getProb());
-            Log.i("TESTUS", "getHypstr: " + hypothesis.getHypstr());
             String voiceCommand = hypothesis.getHypstr();
-            if (-1700 > hypothesis.getBestScore() && hypothesis.getBestScore() > -3700) {
+            if (MAXIMUM_SCORE > hypothesis.getBestScore() && hypothesis.getBestScore() > MINIMUM_SCORE) {
                 parseVoiceCommand(voiceCommander.getActionForVoiceCommand(voiceCommand));
                 makeText(getContext(), voiceCommand, Toast.LENGTH_SHORT).show();
             }
             if (hypothesis.getBestScore() != 0) {
-                switchSearch(KWS_SEARCH);
+                switchSearch(WAITING_FOR_WAKEUP);
             }
         }
     }
@@ -258,21 +198,18 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
 
     void parseVoiceCommand(String voiceAction) {
         try {
-
-
             switch (voiceAction) {
                 case "START_RECIPE":
-                    Log.i(TAG, "startProcedure: " + mProcedureSteps.get(mCurrentStepPosition));
+                    Log.i(TAG, "startProcedure: " + mRecipeSteps.get(mCurrentStepPosition));
                     mCurrentStepPosition = 0;
-                    speak(mProcedureSteps.get(mCurrentStepPosition));
+                    speak(mRecipeSteps.get(mCurrentStepPosition));
                     break;
                 case "NEXT_STEP":
                     mCurrentStepPosition++;
 
-                    if (mCurrentStepPosition <= mProcedureSteps.size() && mCurrentStepPosition >= 0) {
-                        Log.i(TAG, "nextStep: " + mProcedureSteps.get(mCurrentStepPosition));
-
-                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    if (mCurrentStepPosition <= mRecipeSteps.size() && mCurrentStepPosition >= 0) {
+                        Log.i(TAG, "nextStep: " + mRecipeSteps.get(mCurrentStepPosition));
+                        speak(mRecipeSteps.get(mCurrentStepPosition));
                     } else {
                         mCurrentStepPosition--;
                         Log.e(TAG, "parseVoiceCommand: next step didn't exist ");
@@ -280,24 +217,19 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
                     break;
                 case "PREVIOUS_STEP":
                     mCurrentStepPosition--;
-                    if (mCurrentStepPosition < mProcedureSteps.size() && mCurrentStepPosition >= 0) {
-                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    if (mCurrentStepPosition < mRecipeSteps.size() && mCurrentStepPosition >= 0) {
+                        speak(mRecipeSteps.get(mCurrentStepPosition));
                     } else {
                         mCurrentStepPosition++;
                         Log.e(TAG, "parseVoiceCommand: back step didn't exist ");
                     }
                     break;
                 case "REPEAT_STEP":
-                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mProcedureSteps.size()) {
-                        speak(mProcedureSteps.get(mCurrentStepPosition));
+                    if (mCurrentStepPosition >= 0 && mCurrentStepPosition < mRecipeSteps.size()) {
+                        speak(mRecipeSteps.get(mCurrentStepPosition));
                     } else {
-                        startListeningSpeech();
                         Log.e(TAG, "parseVoiceCommand: repeat step didn't exist ");
                     }
-                    break;
-                case "restartProcedure":
-                    mCurrentStepPosition = 0;
-                    speak(mProcedureSteps.get(mCurrentStepPosition));
                     break;
                 default:
                     break;
@@ -377,7 +309,7 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
 //                    ((TextView) getContext().findViewById(R.id.caption_text))
 //                            .setText("Failed to init recognizer " + result);
                 } else {
-                    switchSearch(KWS_SEARCH);
+                    switchSearch(WAITING_FOR_WAKEUP);
                 }
             }
         }.execute();
@@ -401,11 +333,11 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
          */
 
         // Create keyword-activation search.
-        recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+        recognizer.addKeyphraseSearch(WAITING_FOR_WAKEUP, KEYPHRASE);
 
         // Create grammar-based search for selection between demos
         File menuGrammar = new File(assetsDir, "menu.gram");
-        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
+        recognizer.addGrammarSearch(WAITING_FOR_COMMANDS, menuGrammar);
         ;
     }
 
@@ -413,13 +345,10 @@ public class DisplayOneRecipeFragment extends Fragment implements RecognitionLis
         recognizer.stop();
 
         // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
-        if (searchName.equals(KWS_SEARCH))
+        if (searchName.equals(WAITING_FOR_WAKEUP))
             recognizer.startListening(searchName);
         else
             recognizer.startListening(searchName, 3000);
-
-//        String caption = getResources().getString(captions.get(searchName));
-//        ((TextView) findViewById(R.id.caption_text)).setText(caption);
     }
 }
 

@@ -75,7 +75,7 @@ public class CheckShoppingListFragment extends Fragment implements View.OnClickL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mDataManager = DataManager.getInstance(getContext());
+        mDataManager = DataManager.getInstance();
         mCurrentShoppingList = mDataManager.getCurrentShoppingList();
         mDataBaseHelper = new DatabaseHelper(getContext());
         storesSearchResult = new ArrayList<>();

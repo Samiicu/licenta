@@ -64,11 +64,10 @@ public class DataManager {
             dataManagerInstance.firebaseReferences = new HashMap<>();
             dataManagerInstance.firebaseReferences.put(ROOT_DATA_BASE_REF, FirebaseDatabase.getInstance().getReference());
             dataManagerInstance.currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            dataManagerInstance.firebaseReferences.put(USER_RECIPES_DATA_BASE_REF, dataManagerInstance.firebaseReferences.get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid()));
-            dataManagerInstance.firebaseReferences.put(USER_SHOPPING_LISTS_DATA_BASE_REF, dataManagerInstance.firebaseReferences.get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_SHOPPING_LIST).child(dataManagerInstance.getCurrentUserUid()));
-//            dataManagerInstance.mDatabase = FirebaseDatabase.getInstance().getReference();
-//            dataManagerInstance.mCurrentUserDatabaseProcedures = dataManagerInstance.mDatabase.
-//                    child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid());
+            dataManagerInstance.firebaseReferences.put(USER_RECIPES_DATA_BASE_REF, dataManagerInstance.firebaseReferences
+                    .get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_RECIPES).child(dataManagerInstance.getCurrentUserUid()));
+            dataManagerInstance.firebaseReferences.put(USER_SHOPPING_LISTS_DATA_BASE_REF, dataManagerInstance.firebaseReferences
+                    .get(ROOT_DATA_BASE_REF).child(PATH_USERS_DATA).child(PATH_SHOPPING_LIST).child(dataManagerInstance.getCurrentUserUid()));
             dataManagerInstance.mRecipesData = new ArrayList<>();
             dataManagerInstance.mShoppingListsData = new CopyOnWriteArrayList<>();
             dataManagerInstance.statusChangeListeners = new CopyOnWriteArrayList<>();
@@ -87,15 +86,8 @@ public class DataManager {
     private DataManager() {
     }
 
-    private static void getInstance() {
-        //Double check locking pattern
-        if (dataManagerInstance == null) { //Check for the first time
-
-            synchronized (DataManager.class) {   //Check for the second time.
-                //if there is no instance available... create new one
-                if (dataManagerInstance == null) dataManagerInstance = new DataManager();
-            }
-        }
+    public static DataManager getInstance() {
+        return dataManagerInstance;
     }
 
     public static int getIndexOfRecipe(String receivedProcedureTitle) {
@@ -162,9 +154,6 @@ public class DataManager {
                     int removedIndex = getIndexOfRecipe(receivedShoppingList.getTitle());
                     if (removedIndex != -1) {
                         dataManagerInstance.mShoppingListsData.remove(removedIndex);
-//                        dataManagerInstance.mLayoutDisplayAllRecipes.removeViewAt(removedIndex);
-//                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRemoved(removedIndex);
-//                        dataManagerInstance.mAdapterForDisplayRecipes.notifyItemRangeChanged(removedIndex, dataManagerInstance.mRecipesData.size());
                     }
                 }
 
