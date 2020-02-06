@@ -16,9 +16,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
-/**
- * @author Anirudh Sharma
- */
 @SuppressWarnings("deprecation")
 public class AllProductsCallClient implements Callback<CatalogProducts> {
     Context bgContext;
